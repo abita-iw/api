@@ -1,0 +1,13 @@
+source ./create_schema.sql;
+source ./create_users.sql;
+source ./create_pinTypes.sql;
+source ./create_pins.sql;
+source ./create_images.sql;
+source ./create_tags.sql;
+source ./create_userStars.sql;
+source ./create_pinTags.sql;
+source ./create_userVisitations.sql;
+source ./create_pinVisitations.sql;
+source ./create_flags.sql;
+source ./create_imageSizes.sql;
+source ./create_imageUrls.sql;

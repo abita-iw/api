@@ -1,0 +1,23 @@
+# Logs
+logs
+*.log
+
+# Dependency directory
+# Deployed apps should consider commenting this line out:
+# see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
+node_modules
+
+# Webstorm editor files
+.idea
+
+# production-optimized build folder
+build
+
+# Don't save keys in source control
+keys
+
+# Don't save credentials in source control
+app/constants/*Credentials*
+
+# backup files
+*.bak
