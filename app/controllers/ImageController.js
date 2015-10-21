@@ -1,6 +1,8 @@
+import multer from 'multer';
 import ControllerUtility from '../utilities/ControllerUtility';
 import ImageService from '../services/ImageService';
 
+let upload = multer({ dest: 'uploads/'});
 let ImageController = ControllerUtility.makeController();
 
 ImageController.get('/', function(req, res) {
@@ -11,10 +13,20 @@ ImageController.get('/', function(req, res) {
   });
 });
 
-ImageController.post('/', function(req, res) {
+ImageController.post('/', upload.single('file'), function(req, res) {
+  let file = req.file;
   let image = req.body;
-  ImageService.createImage(image).then(function() {
-    res.sendStatus(204);
+  ImageService.createImage(image).then(function(result) {
+    ImageService.resizeImage(file.path, result.insertId).then(function() {
+      ImageService.getImage(result.insertId).then(function(rows) {
+        if (rows.length == 0) res.status(404).send('An error has occurred');
+        else res.send(rows[0]);
+      }).catch(function(err) {
+        res.status(400).send(err);
+      });
+    }).catch(function(err) {
+      res.status(400).send(err);
+    });
   }).catch(function(err) {
     res.status(400).send(err);
   });

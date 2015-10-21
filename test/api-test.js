@@ -1,8 +1,9 @@
 import chai from 'chai';
 import supertest from 'supertest';
+import { Promise } from 'es6-promise';
+import _ from 'lodash';
 import express from 'express';
 import QueryUtility from '../app/utilities/QueryUtility';
-
 import ApiApp from '../app/ApiApp';
 import models from '../app/models/index';
 
@@ -11,6 +12,8 @@ let API_PORT = 3001;
 
 describe('REST API', function() {
   let api = supertest(`localhost:${API_PORT}/`);
+  let testEmail = 'test@example.com';
+  let testCaption = 'TEST_CAPTION';
 
   before(function(done) {
     let app = express();
@@ -39,6 +42,37 @@ describe('REST API', function() {
   });
 
   describe('Images', function() {
+    let newUserId = null;
+    let newPinId = null;
+    before (function(done) {
+      api
+        .post('users')
+        .send({
+          email: testEmail
+        })
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          newUserId = res.body.userId;
+          api
+            .post('pins')
+            .send({
+              userId: newUserId,
+              typeId: 1,
+              latitude: 0,
+              longitude: 0,
+              description: 'Test',
+              caption: testCaption
+            })
+            .expect(200)
+            .end(function(err, res) {
+              if (err) reject(err);
+              newPinId = res.body.pinId;
+              return done();
+            });
+        });
+    });
+
     it('Should retrieve a list of all images', function(done) {
       api
         .get('images')
@@ -52,11 +86,26 @@ describe('REST API', function() {
           return done();
         });
     });
+
+    it('Should add an image', function(done) {
+      api
+        .post('images')
+        .type('form')
+        .attach('file', './public/test.jpg')
+        .field('userId', newUserId)
+        .field('pinId', newPinId)
+        .expect('Content-Type', /json/)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).to.have.all.keys(models.image);
+          return done();
+        });
+    });
   });
 
   describe('Users', function() {
-    let testEmail = 'test@example.com';
-    let newId = null;
+
+    let newUserId = null;
     it('Should create a new user', function(done) {
       api
         .post('users')
@@ -66,18 +115,19 @@ describe('REST API', function() {
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
-          newId = res.body.userId;
+          newUserId = res.body.userId;
+          expect(res.body).to.have.all.keys(models.user);
           return done();
         });
     });
 
     it('Should retrieve a single user', function(done) {
       api
-        .get(`users/${newId}`)
+        .get(`users/${newUserId}`)
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
-          expect(res.body).instanceof(Object);
+          expect(res.body).to.have.all.keys(models.user);
           return done();
         });
     });
@@ -98,7 +148,7 @@ describe('REST API', function() {
 
     it('Should retrieve a list of user stars', function(done) {
       api
-        .get(`users/${newId}/stars`)
+        .get(`users/${newUserId}/stars`)
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
@@ -112,7 +162,7 @@ describe('REST API', function() {
 
     it('Should delete a user', function(done) {
       api
-        .del(`users/${newId}`)
+        .del(`users/${newUserId}`)
         .expect(204)
         .end(function(err) {
           if (err) return done(err);
@@ -121,17 +171,15 @@ describe('REST API', function() {
     });
 
     after(function() {
-      QueryUtility.query(`DELETE FROM users WHERE email = '${testEmail}'`);
+      QueryUtility.query(`DELETE FROM users WHERE userId = '${newUserId}'`);
     });
   });
 
   describe('Pins', function() {
-    let testCaption = 'TEST_CAPTION';
-    let newPinId = null;
 
-    let testEmail = 'test@example.com';
+    let newPinId = null;
     let newUserId = null;
-    it('Should create a new user', function(done) {
+    before(function(done) {
       api
         .post('users')
         .send({
@@ -160,6 +208,7 @@ describe('REST API', function() {
         .end(function(err, res) {
           if (err) return done(err);
           newPinId = res.body.pinId;
+          expect(res.body).to.have.all.keys(models.pin);
           return done();
         });
     });
@@ -170,6 +219,7 @@ describe('REST API', function() {
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
+          expect(res.body).to.have.all.keys(models.pin);
           return done();
         });
     });
@@ -194,28 +244,13 @@ describe('REST API', function() {
         });
     });
 
-    it('Should delete a user', function(done) {
-      api
-        .del(`users/${newUserId}`)
-        .expect(204)
-        .end(function(err) {
-          if (err) return done(err);
-          return done();
-        });
-    });
 
-    after(function() {
-      QueryUtility.query(`DELETE FROM pins WHERE caption = '${testCaption}'`);
-      QueryUtility.query(`DELETE FROM users WHERE email = '${testEmail}'`);
-    });
   });
 
   describe('Stars', function() {
-    let testEmail = 'test@example.com';
-    let testCaption = 'TEST_CAPTION';
     let newUserId = null;
     let newPinId = null;
-    it('Should create a new user', function(done) {
+    before (function(done) {
       api
         .post('users')
         .send({
@@ -225,26 +260,22 @@ describe('REST API', function() {
         .end(function(err, res) {
           if (err) return done(err);
           newUserId = res.body.userId;
-          return done();
-        });
-    });
-
-    it('Should create a new pin', function(done) {
-      api
-        .post('pins')
-        .send({
-          userId: newUserId,
-          typeId: 1,
-          latitude: 0,
-          longitude: 0,
-          description: 'Test',
-          caption: testCaption
-        })
-        .expect(200)
-        .end(function(err, res) {
-          if (err) return done(err);
-          newPinId = res.body.pinId;
-          return done();
+          api
+            .post('pins')
+            .send({
+              userId: newUserId,
+              typeId: 1,
+              latitude: 0,
+              longitude: 0,
+              description: 'Test',
+              caption: testCaption
+            })
+            .expect(200)
+            .end(function(err, res) {
+              if (err) reject(err);
+              newPinId = res.body.pinId;
+              return done();
+            });
         });
     });
 
@@ -269,7 +300,156 @@ describe('REST API', function() {
     });
 
     after(function() {
-      QueryUtility.query(`DELETE FROM pins WHERE caption = '${testCaption}'`);
+      QueryUtility.query(`DELETE FROM stars WHERE userId = ${newUserId} AND pinId = ${newPinId}`);
+    });
+  });
+
+  describe('Tags', function() {
+    let testTag = 'TEST_TAG';
+    let newTagId = null;
+    it('Should create a new tag', function(done) {
+      api
+        .post('tags')
+        .send({
+          name: testTag
+        })
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          newTagId = res.body.tagId;
+          expect(res.body).to.have.all.keys(models.tag);
+          return done();
+        });
+    });
+
+    it('Should retrieve a specific tag', function(done) {
+      api
+        .get(`tags/${newTagId}`)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).to.have.all.keys(models.tag);
+          return done();
+        });
+    });
+
+    after(function() {
+      QueryUtility.query(`DELETE FROM tags WHERE name = '${testTag}'`);
+    });
+  });
+
+  describe('Descriptions', function() {
+    let descriptionText = 'TEST_DESCRIPTION';
+    let newUserId = null;
+    let newPinId = null;
+    let newDescriptionId = null;
+    before (function(done) {
+      api
+        .post('users')
+        .send({
+          email: testEmail
+        })
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          newUserId = res.body.userId;
+          api
+            .post('pins')
+            .send({
+              userId: newUserId,
+              typeId: 1,
+              latitude: 0,
+              longitude: 0,
+              description: 'Test',
+              caption: testCaption
+            })
+            .expect(200)
+            .end(function(err, res) {
+              if (err) reject(err);
+              newPinId = res.body.pinId;
+              return done();
+            });
+        });
+    });
+
+    it('Should create a new description', function(done) {
+      api
+        .post('descriptions')
+        .send({
+          userId: newUserId,
+          pinId: newPinId,
+          text: descriptionText,
+        })
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          newDescriptionId = res.body.descriptionId;
+          expect(res.body).to.have.all.keys(models.description);
+          return done();
+        });
+    });
+
+    it('Should retrieve a single description', function(done) {
+      api
+        .get(`descriptions/${newDescriptionId}`)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).to.have.all.keys(models.description);
+          return done();
+        });
+    });
+
+    it('Should update a description', function(done) {
+      let newText = 'NEW DESCRIPTION TEXT';
+      let newDescription = {
+        descriptionId: newDescriptionId,
+        pinId: newPinId,
+        userId: newUserId,
+        text: newText
+      };
+      api
+        .put(`descriptions`)
+        .send(newDescription)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).to.have.all.keys(models.description);
+          expect(res.body.text).to.equal(newText);
+          return done();
+        });
+    });
+
+    it('Should delete a description', function(done) {
+      api
+        .del(`descriptions/${newDescriptionId}`)
+        .expect(204)
+        .end(function(err, res) {
+          if (err) return done(err);
+          return done();
+        });
+    });
+
+    after(function() {
+      QueryUtility.query(`DELETE FROM descriptions WHERE descriptionId = '${newDescriptionId}'`);
+    });
+  });
+
+  describe('PinTypes', function() {
+    it('Should retrieve a list of pin types', function(done) {
+      api
+        .get(`pinTypes`)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          res.body.forEach(pinType => expect (pinType).to.have.all.keys(models.pinType));
+          return done();
+        });
+    })
+  });
+
+  after(function() {
+    QueryUtility.query(`DELETE FROM pins WHERE caption = '${testCaption}'`).then(function() {
       QueryUtility.query(`DELETE FROM users WHERE email = '${testEmail}'`);
     });
   });

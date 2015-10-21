@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS `iw_api`.`pinVisitations` ;
 CREATE TABLE IF NOT EXISTS `iw_api`.`pinVisitations` (
   `pinVisitationId` INT NOT NULL AUTO_INCREMENT COMMENT '',
   `pinId` INT NOT NULL COMMENT '',
-  `createdDate` DATETIME NOT NULL COMMENT '',
+  `dateCreated` DATETIME NOT NULL COMMENT '',
   PRIMARY KEY (`pinVisitationId`)  COMMENT '',
   INDEX `fk_pinVisitations_1_idx` (`pinId` ASC)  COMMENT '',
   CONSTRAINT `fk_pinVisitations_1`

@@ -1,8 +1,9 @@
 export default {
+  description: ['descriptionId', 'userId', 'pinId', 'text', 'dateCreated', 'dateModified'],
   image: ['imageId', 'userId', 'pinId', 'dateCreated', 'dateModified'],
   imageUrl: ['imageId', 'imageSizeId', 'url'],
   imageSize: ['imageSizeId', 'name', 'height', 'width'],
-  user: ['userId', 'email', 'dateCreated', 'dateModified', 'isDeleted'],
+  user: ['userId', 'email', 'dateCreated', 'dateModified'],
   star: ['userId', 'pinId', 'dateCreated', 'isDeleted'],
   userVisitation: ['userId', 'pinId'],
   flag: ['userId', 'pinId', 'dateCreated'],
@@ -10,5 +11,5 @@ export default {
   tag: ['tagId', 'name', 'dateCreated', 'dateModified'],
   pinTag: ['pinId', 'tagId'],
   pinVisitation: ['pinVisitationId', 'pinId', 'createdDate'],
-  pin: ['pinId', 'userId', 'typeId', 'latitude', 'longitude', 'dateCreated', 'dateModified', 'isDeleted', 'description', 'caption']
+  pin: ['pinId', 'userId', 'pinType', 'latitude', 'longitude', 'dateCreated', 'dateModified', 'description', 'caption']
 };

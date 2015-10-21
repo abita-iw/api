@@ -5,7 +5,18 @@ let query = QueryUtility.query;
 
 let UserService = {
   getUsers: function () {
-    return query("SELECT * FROM users");
+    let sql = `
+SELECT
+    userId,
+    email,
+    dateCreated,
+    dateModified
+FROM
+    users
+WHERE
+    isDeleted = false
+`;
+    return query(sql);
   },
 
   getUser: function(userId) {

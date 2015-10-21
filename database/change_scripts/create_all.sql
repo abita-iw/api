@@ -11,3 +11,4 @@ source ./create_pinVisitations.sql;
 source ./create_flags.sql;
 source ./create_imageSizes.sql;
 source ./create_imageUrls.sql;
+source ./create_descriptions.sql;

@@ -4,6 +4,8 @@ import ImageSizeController from './controllers/ImageSizeController';
 import UserController from './controllers/UserController';
 import PinController from './controllers/PinController';
 import PinTypeController from './controllers/PinTypeController';
+import TagController from './controllers/TagController';
+import DescriptionController from './controllers/DescriptionController';
 
 let ApiApp = ControllerUtility.makeController();
 
@@ -12,5 +14,7 @@ ApiApp.use('/imageSizes', ImageSizeController);
 ApiApp.use('/users', UserController);
 ApiApp.use('/pins', PinController);
 ApiApp.use('/pinTypes', PinTypeController);
+ApiApp.use('/tags', TagController);
+ApiApp.use('/descriptions', DescriptionController);
 
 export default ApiApp;

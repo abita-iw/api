@@ -1,0 +1,6 @@
+1,"square",60,60
+2,"tiny",NULL,32
+3,"thumbnail",NULL,100
+4,"small",NULL,240
+5,"medium",NULL,500
+6,"large",NULL,600

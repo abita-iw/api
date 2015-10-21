@@ -1,7 +1,7 @@
-source change_scripts/create_users.sql;
+source change_scripts/create_imageSizes.sql;
 
 LOAD DATA LOCAL INFILE
-    './data/users.csv'
+    './data/imageSizes.csv'
 INTO TABLE
     `iw_api`.`users`
 FIELDS TERMINATED BY
