@@ -21,3 +21,8 @@ app/constants/*Credentials*
 
 # backup files
 *.bak
+
+public/css/main.css
+public/js/main.js
+public/images
+uploads

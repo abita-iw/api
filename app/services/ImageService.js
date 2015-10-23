@@ -2,6 +2,7 @@ import ImageMagick from 'imagemagick';
 import QueryUtility from '../utilities/QueryUtility';
 import DateUtility from '../utilities/DateUtility';
 import { Promise } from 'es6-promise';
+import { imageSizes } from '../constants/AppConstants';
 
 let query = QueryUtility.query;
 
@@ -26,6 +27,22 @@ WHERE
     return query(sql, [imageId]);
   },
 
+  getPinImages: function(pinId) {
+    let sql = `
+SELECT
+    imageId,
+    userId,
+    pinId,
+    dateCreated,
+    dateModified
+FROM
+    images
+WHERE
+    pinId = ?
+`;
+    return query(sql, [pinId]);
+  },
+
   createImage: function(image) {
     let now = DateUtility.getNow();
     let sql = `
@@ -38,49 +55,11 @@ VALUES
   },
 
   resizeImage: function(imagePath, imageId) {
-    let imageSizes = [
-      {
-        "imageSizeId": 1,
-        "name": "tiny",
-        "height": null,
-        "width": 32
-      },
-      {
-        "imageSizeId": 2,
-        "name": "small",
-        "height": null,
-        "width": 240
-      },
-      {
-        "imageSizeId": 3,
-        "name": "thumbnail",
-        "height": null,
-        "width": 100
-      },
-      {
-        "imageSizeId": 4,
-        "name": "medium",
-        "height": null,
-        "width": 500
-      },
-      {
-        "imageSizeId": 5,
-        "name": "large",
-        "height": null,
-        "width": 640
-      },
-      {
-        "imageSizeId": 6,
-        "name": "square",
-        "height": 60,
-        "width": 60
-      }
-    ];
     let options = imageSizes.map(function(is) {
       return {
         width: is.width,
         srcPath: imagePath,
-        dstPath: `public/${is.name}/${imageId}.png`
+        dstPath: `public/images/${is.name}/${imageId}.png`
       }
     });
     let promises = options.map(function(option) {
@@ -95,7 +74,15 @@ VALUES
   },
 
   deleteImage: function(imageId) {
-    return query("DELETE FROM images WHERE imageId = ?", [imageId]);
+    let sql = `
+UPDATE
+    images
+SET
+    isDeleted = true
+WHERE
+    imageId = ?
+`;
+    return query(sql, [imageId]);
   }
 };
 

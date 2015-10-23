@@ -9,7 +9,7 @@ let UserController = ControllerUtility.makeController();
 UserController.post('/', function(req, res) {
   UserService.createUser(req.body).then(function(result) {
     UserService.getUser(result.insertId).then(function(rows) {
-      res.send(rows[0]);
+      res.status(201).send(rows[0]);
     });
   }).catch(function(err) {
     res.status(400).send(err);
@@ -33,7 +33,7 @@ UserController.get('/:userId', function(req, res) {
   });
 });
 
-UserController.put('/:userId/star/:pinId', function(req, res) {
+UserController.put('/:userId/stars/:pinId', function(req, res) {
   StarService.createStar(req.params.userId, req.params.pinId).then(function() {
     res.sendStatus(204);
   }).catch(function(err) {
@@ -41,7 +41,7 @@ UserController.put('/:userId/star/:pinId', function(req, res) {
   });
 });
 
-UserController.delete('/:userId/star/:pinId', function(req, res) {
+UserController.delete('/:userId/stars/:pinId', function(req, res) {
   StarService.deleteStar(req.params.userId, req.params.pinId).then(function() {
     res.sendStatus(204);
   }).catch(function(err) {
@@ -73,7 +73,15 @@ UserController.get('/:userId/descriptions', function(req, res) {
   });
 });
 
-UserController.put('/:userId/visit/:pinId', function(req, res) {
+UserController.get('/:userId/visits', function(req, res) {
+  VisitationService.getUserPinVisitations(req.params.userId).then(function(rows) {
+    res.send(rows);
+  }).catch(function(err) {
+    res.status(400).send(err);
+  });
+});
+
+UserController.put('/:userId/visits/:pinId', function(req, res) {
   VisitationService.createUserVisitation(req.params.userId, req.params.pinId).then(function() {
     res.sendStatus(204);
   }).catch(function(err) {

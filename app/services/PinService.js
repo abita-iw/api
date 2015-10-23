@@ -14,7 +14,6 @@ SELECT
     longitude,
     dateCreated,
     dateModified,
-    description,
     caption
 FROM
     pins
@@ -36,7 +35,6 @@ SELECT
     longitude,
     dateCreated,
     dateModified,
-    description,
     caption
 FROM
     pins
@@ -60,13 +58,12 @@ INSERT INTO
         longitude,
         dateCreated,
         dateModified,
-        description,
         caption
     )
 VALUES
-    (?,?,?,?,?,?,?,?)
+    (?,?,?,?,?,?,?)
 `;
-    return query(sql, [pin.userId, pin.typeId, pin.latitude, pin.longitude, now, now, pin.description, pin.caption]);
+    return query(sql, [pin.userId, pin.typeId, pin.latitude, pin.longitude, now, now, pin.caption]);
   },
 
   visitPin: function(pinId) {
@@ -78,6 +75,23 @@ VALUES
     (?,?)
 `;
     return query(sql, [pinId, now]);
+  },
+
+  updatePin: function(pin) {
+    let now = DateUtility.getNow();
+    let sql = `
+UPDATE
+    pins
+SET
+    typeId = ?,
+    latitude = ?,
+    longitude = ?,
+    dateModified = ?,
+    caption = ?
+WHERE
+    pinId = ?
+`;
+    return query(sql, [pin.typeId, pin.latitude, pin.longitude, now, pin.caption, pin.pinId]);
   },
 
   deletePin: function(pinId) {

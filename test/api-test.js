@@ -8,7 +8,7 @@ import ApiApp from '../app/ApiApp';
 import models from '../app/models/index';
 
 let expect = chai.expect;
-let API_PORT = 3001;
+let API_PORT = 4001;
 
 describe('REST API', function() {
   let api = supertest(`localhost:${API_PORT}/`);
@@ -50,7 +50,7 @@ describe('REST API', function() {
         .send({
           email: testEmail
         })
-        .expect(200)
+        .expect(201)
         .end(function(err, res) {
           if (err) return done(err);
           newUserId = res.body.userId;
@@ -64,9 +64,9 @@ describe('REST API', function() {
               description: 'Test',
               caption: testCaption
             })
-            .expect(200)
+            .expect(201)
             .end(function(err, res) {
-              if (err) reject(err);
+              if (err) return done(err);
               newPinId = res.body.pinId;
               return done();
             });
@@ -112,7 +112,7 @@ describe('REST API', function() {
         .send({
           email: testEmail
         })
-        .expect(200)
+        .expect(201)
         .end(function(err, res) {
           if (err) return done(err);
           newUserId = res.body.userId;
@@ -157,7 +157,7 @@ describe('REST API', function() {
             expect(user).to.have.all.keys(models.star);
           });
           return done();
-        })
+        });
     });
 
     it('Should delete a user', function(done) {
@@ -185,7 +185,7 @@ describe('REST API', function() {
         .send({
           email: testEmail
         })
-        .expect(200)
+        .expect(201)
         .end(function(err, res) {
           if (err) return done(err);
           newUserId = res.body.userId;
@@ -204,7 +204,7 @@ describe('REST API', function() {
           description: 'test',
           caption: testCaption
         })
-        .expect(200)
+        .expect(201)
         .end(function(err, res) {
           if (err) return done(err);
           newPinId = res.body.pinId;
@@ -256,7 +256,7 @@ describe('REST API', function() {
         .send({
           email: testEmail
         })
-        .expect(200)
+        .expect(201)
         .end(function(err, res) {
           if (err) return done(err);
           newUserId = res.body.userId;
@@ -270,7 +270,7 @@ describe('REST API', function() {
               description: 'Test',
               caption: testCaption
             })
-            .expect(200)
+            .expect(201)
             .end(function(err, res) {
               if (err) reject(err);
               newPinId = res.body.pinId;
@@ -281,7 +281,7 @@ describe('REST API', function() {
 
     it('Should star a pin', function(done) {
       api
-        .put(`users/${newUserId}/star/${newPinId}`)
+        .put(`users/${newUserId}/stars/${newPinId}`)
         .expect(204)
         .end(function(err, res) {
           if (err) return done(err);
@@ -291,7 +291,7 @@ describe('REST API', function() {
 
     it('Should unstar a pin', function(done) {
       api
-        .del(`users/${newUserId}/star/${newPinId}`)
+        .del(`users/${newUserId}/stars/${newPinId}`)
         .expect(204)
         .end(function(err, res) {
           if (err) return done(err);
@@ -313,7 +313,7 @@ describe('REST API', function() {
         .send({
           name: testTag
         })
-        .expect(200)
+        .expect(201)
         .end(function(err, res) {
           if (err) return done(err);
           newTagId = res.body.tagId;
@@ -349,7 +349,7 @@ describe('REST API', function() {
         .send({
           email: testEmail
         })
-        .expect(200)
+        .expect(201)
         .end(function(err, res) {
           if (err) return done(err);
           newUserId = res.body.userId;
@@ -363,7 +363,7 @@ describe('REST API', function() {
               description: 'Test',
               caption: testCaption
             })
-            .expect(200)
+            .expect(201)
             .end(function(err, res) {
               if (err) reject(err);
               newPinId = res.body.pinId;
@@ -380,7 +380,7 @@ describe('REST API', function() {
           pinId: newPinId,
           text: descriptionText,
         })
-        .expect(200)
+        .expect(201)
         .end(function(err, res) {
           if (err) return done(err);
           newDescriptionId = res.body.descriptionId;

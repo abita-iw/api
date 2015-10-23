@@ -59,7 +59,7 @@ VALUES
     let now = DateUtility.getNow();
     let sql = `
 INSERT INTO
-    userVisitations (pinId, dateCreated)
+    pinVisitations (pinId, dateCreated)
 VALUES
     (?,?)
 `;

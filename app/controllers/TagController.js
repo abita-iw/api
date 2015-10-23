@@ -25,7 +25,7 @@ TagController.post('/', function(req, res) {
   TagService.createTag(tag).then(function(result) {
     TagService.getTag(result.insertId).then(function(rows) {
       if (rows.length != 1) res.status(400).send('An error has occurred');
-      else res.send(rows[0]);
+      else res.status(201).send(rows[0]);
     })
   }).catch(function(err) {
     res.status(400).send(err);

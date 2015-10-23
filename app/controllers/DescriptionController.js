@@ -25,7 +25,7 @@ DescriptionController.post('/', function(req, res) {
   DescriptionService.createDescription(description).then(function(result) {
     DescriptionService.getDescription(result.insertId).then(function(rows) {
       if (rows.length == 0) res.status(400).send('An error has occurred');
-      else res.send(rows[0]);
+      else res.status(201).send(rows[0]);
     });
   }).catch(function(err) {
     res.status(400).send(err);
