@@ -2,6 +2,7 @@
 
 require('babel/register');
 
+var fs = require('fs');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -12,6 +13,7 @@ var morgan = require('morgan');
 var app = express();
 var ApiApp = require('./ApiApp');
 var ServerRender = require('./server.jsx');
+var https = require('https');
 
 app.use(morgan(app.get('env') === 'production' ? 'combined' : 'dev', { "stream": logger.stream }));
 app.use(bodyParser.json());
@@ -34,6 +36,11 @@ app.use(function (err, req, res, next) {
 
 app.set('port', process.env.PORT || 5000);
 
-app.listen(app.get('port'), function () {
-  console.log('Express ' + app.get('env') + ' server listening on port ' + this.address().port);
+var options = {
+  key: fs.readFileSync('./keys/server.key'),
+  cert: fs.readFileSync('./keys/server.crt')
+};
+
+https.createServer(options, app).listen(5000, function() {
+  console.log('HTTPS ' + app.get('env') + ' server listening on port ' + this.address().port);
 });
