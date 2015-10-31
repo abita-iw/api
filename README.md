@@ -1,3 +1,3 @@
-# environ-explorer api
+# abita-iw api
 
-Backend API supporting the environ-explorer Android app.
+Backend API supporting the Abita Android app.
