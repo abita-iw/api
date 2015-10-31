@@ -16,8 +16,6 @@ ImageController.get('/', function(req, res) {
 ImageController.post('/', upload.single('file'), function(req, res) {
   let file = req.file;
   let image = req.body;
-  console.log(file);
-  console.log(image);
   ImageService.createImage(image).then(function(result) {
     ImageService.resizeImage(file.path, result.insertId).then(function() {
       ImageService.getImage(result.insertId).then(function(rows) {

@@ -4,7 +4,7 @@ export default {
   imageUrl: ['imageId', 'imageSizeId', 'url'],
   imageSize: ['imageSizeId', 'name', 'height', 'width'],
   user: ['userId', 'email', 'dateCreated', 'dateModified'],
-  star: ['userId', 'pinId', 'dateCreated', 'isDeleted'],
+  star: ['userId', 'pinId', 'dateCreated'],
   userVisitation: ['userId', 'pinId'],
   flag: ['userId', 'pinId', 'dateCreated'],
   pinType: ['pinTypeId', 'name'],

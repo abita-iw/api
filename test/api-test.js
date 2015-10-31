@@ -91,7 +91,7 @@ describe('REST API', function() {
       api
         .post('images')
         .type('form')
-        .attach('file', './public/test.jpg')
+        .attach('file', './public/images/test.jpg')
         .field('userId', newUserId)
         .field('pinId', newPinId)
         .expect('Content-Type', /json/)
@@ -101,11 +101,16 @@ describe('REST API', function() {
           return done();
         });
     });
+
+    after(function() {
+      QueryUtility.query(`DELETE FROM images where userId = ${newUserId} AND pinId = ${newPinId}`);
+    });
   });
 
   describe('Users', function() {
 
     let newUserId = null;
+    let newPinId = null;
     it('Should create a new user', function(done) {
       api
         .post('users')
@@ -116,8 +121,23 @@ describe('REST API', function() {
         .end(function(err, res) {
           if (err) return done(err);
           newUserId = res.body.userId;
-          expect(res.body).to.have.all.keys(models.user);
-          return done();
+          expect(res.body).to.have.all.keys(models.user)
+          api
+            .post('pins')
+            .send({
+              userId: newUserId,
+              typeId: 1,
+              latitude: 0,
+              longitude: 0,
+              description: 'Test',
+              caption: testCaption
+            })
+            .expect(201)
+            .end(function(err, res) {
+              if (err) reject(err);
+              newPinId = res.body.pinId;
+              return done();
+            });
         });
     });
 
@@ -146,6 +166,16 @@ describe('REST API', function() {
         });
     });
 
+    it('Should create a user star', function(done) {
+      api
+        .put(`users/${newUserId}/stars/${newPinId}`)
+        .expect(204)
+        .end(function(err, res) {
+          if (err) return done(err);
+          return done();
+        });
+    });
+    
     it('Should retrieve a list of user stars', function(done) {
       api
         .get(`users/${newUserId}/stars`)
@@ -171,7 +201,11 @@ describe('REST API', function() {
     });
 
     after(function() {
-      QueryUtility.query(`DELETE FROM users WHERE userId = '${newUserId}'`);
+      QueryUtility.query(`DELETE FROM stars WHERE pinId = '${newPinId}' AND userId = '${newUserId}'`).then(function() {
+        QueryUtility.query(`DELETE FROM pins WHERE pinId = '${newPinId}'`).then(function() {
+          QueryUtility.query(`DELETE FROM users WHERE userId = '${newUserId}'`);
+        });
+      });
     });
   });
 
@@ -453,4 +487,5 @@ describe('REST API', function() {
       QueryUtility.query(`DELETE FROM users WHERE email = '${testEmail}'`);
     });
   });
+
 });

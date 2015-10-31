@@ -404,7 +404,7 @@ class DocPage extends React.Component {
           <h4>Get pin descriptions</h4>
           <code>{`GET /pins/{pinId}/descriptions`}</code>
           <pre className="docs-example">{`curl ${apiUri}/pins/90/descriptions`}</pre>
-          <pre className="prettyprint"><code className="javascript">{`201 OK
+          <pre className="prettyprint"><code className="javascript">{`200 OK
 [
   {
     "descriptionId":14,
@@ -420,7 +420,7 @@ class DocPage extends React.Component {
           <h4>Get pin tags</h4>
           <code>{`GET /pins/{pinId}/tags`}</code>
           <pre className="docs-example">{`curl ${apiUri}/pins/30/tags`}</pre>
-          <pre className="prettyprint"><code className="javascript">{`201 OK
+          <pre className="prettyprint"><code className="javascript">{`200 OK
 [
   {
     "tagId":38,
@@ -434,7 +434,7 @@ class DocPage extends React.Component {
           <h4>Get pin images</h4>
           <code>{`GET /pins/{pinId}/images`}</code>
           <pre className="docs-example">{`curl ${apiUri}/pins/90/images`}</pre>
-          <pre className="prettyprint"><code className="javascript">{`201 OK
+          <pre className="prettyprint"><code className="javascript">{`200 OK
 [
   {
     "imageId":6,
