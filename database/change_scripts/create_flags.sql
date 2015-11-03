@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `iw_api`.`flags` (
   `userId` INT NOT NULL COMMENT '',
   `pinId` INT NOT NULL COMMENT '',
   `dateCreated` DATETIME NOT NULL COMMENT '',
+  `isDeleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '',
   PRIMARY KEY (`userId`, `pinId`)  COMMENT '',
   INDEX `fk_flags_2_idx` (`pinId` ASC)  COMMENT '',
   CONSTRAINT `fk_flags_1`

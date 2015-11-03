@@ -1,11 +1,12 @@
 -- -----------------------------------------------------
--- Table `iw_api`.`userVisitations`
+-- Table `iw_api`.`visitations`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `iw_api`.`userVisitations` ;
+DROP TABLE IF EXISTS `iw_api`.`visitations` ;
 
-CREATE TABLE IF NOT EXISTS `iw_api`.`userVisitations` (
+CREATE TABLE IF NOT EXISTS `iw_api`.`visitations` (
   `userId` INT NOT NULL COMMENT '',
   `pinId` INT NOT NULL COMMENT '',
+  `dateCreated` DATETIME NOT NULL COMMENT '',
   PRIMARY KEY (`userId`, `pinId`)  COMMENT '',
   INDEX `fk_userVisitations_2_idx` (`pinId` ASC)  COMMENT '',
   CONSTRAINT `fk_userVisitations_1`
