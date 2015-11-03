@@ -8,62 +8,40 @@ let VisitationService = {
   getPinVisitations: function(pinId) {
     let sql = `
 SELECT
-    pinVisitationId,
+    userId,
     pinId,
     dateCreated
 FROM
-    pinVisitations
+    visitations
 WHERE
     pinId = ?
 `;
     return query(sql, [pinId]);
   },
 
-  getUserPinVisitations: function(userId) {
+  getUserVisitations: function(userId) {
     let sql = `
 SELECT
     userId,
-    pinId
+    pinId,
+    dateCreated
 FROM
-    userVisitations
+    visitations
 WHERE
     userId = ?
 `;
     return query(sql, [userId]);
   },
 
-  getPinUserVisitations: function(pinId) {
-    let sql = `
-SELECT
-    userId,
-    pinId
-FROM
-    userVisitations
-WHERE
-    pinId = ?
-`;
-    return query(sql, [pinId]);
-  },
-
-  createUserVisitation: function(userId, pinId) {
-    let sql = `
-INSERT INTO
-    userVisitations (userId, pinId)
-VALUES
-    (?,?)
-`;
-    return query(sql, [userId, pinId]);
-  },
-
-  createPinVisitation: function(pinId) {
+  createVisitation: function(userId, pinId) {
     let now = DateUtility.getNow();
     let sql = `
 INSERT INTO
-    pinVisitations (pinId, dateCreated)
+    visitations (userId, pinId, dateCreated)
 VALUES
-    (?,?)
+    (?,?,?)
 `;
-    return query(sql, [pinId, now]);
+    return query(sql, [userId, pinId, now]);
   }
 };
 

@@ -58,9 +58,7 @@ PinController.post('/', function(req, res) {
 PinController.put('/', function(req, res) {
   let pin = req.body;
   PinService.updatePin(pin).then(function() {
-    console.log(pin);
     PinService.getPin(pin.pinId).then(function(rows) {
-      console.log(rows);
       if (rows.length == 0) res.status(400).send('An error has occurred');
       else res.send(rows[0]);
     }).catch(function(err) {
@@ -73,14 +71,6 @@ PinController.put('/', function(req, res) {
 
 PinController.delete('/:pinId', function(req, res) {
   PinService.deletePin(req.params.pinId).then(function() {
-    res.sendStatus(204);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
-});
-
-PinController.put('/:pinId/visits', function(req, res) {
-  PinService.visitPin(req.params.pinId).then(function() {
     res.sendStatus(204);
   }).catch(function(err) {
     res.status(400).send(err);
@@ -128,8 +118,16 @@ PinController.delete('/:pinId/tags/:tagId', function(req, res) {
 });
 
 PinController.put('/:pinId/visits/:userId', function(req, res) {
-  VisitationService.createUserVisitation(req.params.userId, req.params.pinId).then(function() {
+  VisitationService.createVisitation(req.params.userId, req.params.pinId).then(function() {
     res.sendStatus(204);
+  }).catch(function(err) {
+    res.status(400).send(err);
+  });
+});
+
+PinController.get('/:pinId/visits', function(req, res) {
+  VisitationService.getPinVisitations(req.params.pinId).then(function(rows) {
+    res.send(rows);
   }).catch(function(err) {
     res.status(400).send(err);
   });

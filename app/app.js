@@ -14,6 +14,7 @@ var app = express();
 var ApiApp = require('./ApiApp');
 var ServerRender = require('./server.jsx');
 var https = require('https');
+var http = require('http');
 
 app.use(morgan(app.get('env') === 'production' ? 'combined' : 'dev', { "stream": logger.stream }));
 app.use(bodyParser.json());
@@ -43,4 +44,8 @@ var options = {
 
 https.createServer(options, app).listen(5000, function() {
   console.log('HTTPS ' + app.get('env') + ' server listening on port ' + this.address().port);
+});
+
+http.createServer(app).listen(6000, function() {
+  console.log('HTTP ' + app.get('env') + ' server listening on port ' + this.address().port);
 });

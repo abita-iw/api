@@ -66,17 +66,6 @@ VALUES
     return query(sql, [pin.userId, pin.typeId, pin.latitude, pin.longitude, now, now, pin.caption]);
   },
 
-  visitPin: function(pinId) {
-    let now = DateUtility.getNow();
-    let sql = `
-INSERT INTO
-    pinVisitations (pinId, createdDate)
-VALUES
-    (?,?)
-`;
-    return query(sql, [pinId, now]);
-  },
-
   updatePin: function(pin) {
     let now = DateUtility.getNow();
     let sql = `

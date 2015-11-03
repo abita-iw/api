@@ -74,7 +74,7 @@ UserController.get('/:userId/descriptions', function(req, res) {
 });
 
 UserController.get('/:userId/visits', function(req, res) {
-  VisitationService.getUserPinVisitations(req.params.userId).then(function(rows) {
+  VisitationService.getUserVisitations(req.params.userId).then(function(rows) {
     res.send(rows);
   }).catch(function(err) {
     res.status(400).send(err);
@@ -82,7 +82,7 @@ UserController.get('/:userId/visits', function(req, res) {
 });
 
 UserController.put('/:userId/visits/:pinId', function(req, res) {
-  VisitationService.createUserVisitation(req.params.userId, req.params.pinId).then(function() {
+  VisitationService.createVisitation(req.params.userId, req.params.pinId).then(function() {
     res.sendStatus(204);
   }).catch(function(err) {
     res.status(400).send(err);

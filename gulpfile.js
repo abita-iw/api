@@ -54,7 +54,7 @@ gulp.task('serve', ['js'], function () {
 
   // Serve files from the root of this project
   browserSync.init({
-    proxy: 'localhost:5000',
+    proxy: 'localhost:6000',
     browser: []
   });
 

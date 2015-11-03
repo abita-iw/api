@@ -283,7 +283,7 @@ class DocPage extends React.Component {
   }
 ]`}</code></pre>
 
-          <h4>Create a user visitation</h4>
+          <h4>Create a visitation</h4>
           <code>{`PUT /users/{userId}/visits/{pinId}`}</code>
           <pre className="docs-example">{`curl -X PUT ${apiUri}/users/1/visits/1`}</pre>
           <pre className="prettyprint"><code className="javascript">204 No Content</code></pre>
@@ -372,14 +372,22 @@ class DocPage extends React.Component {
           <pre className="prettyprint"><code className="javascript">{`204 No Content`}</code></pre>
 
           <h4>Log a pin visit</h4>
-          <code>{`PUT /pins/{pinId}/visits`}</code>
-          <pre className="docs-example">{`curl -X PUT ${apiUri}/pins/90/visits`}</pre>
-          <pre className="prettyprint"><code className="javascript">{`204 No Content`}</code></pre>
-
-          <h4>Log a user pin visit</h4>
           <code>{`PUT /pins/{pinId}/visits/{userId}`}</code>
           <pre className="docs-example">{`curl -X PUT ${apiUri}/pins/90/visits/1`}</pre>
           <pre className="prettyprint"><code className="javascript">{`204 No Content`}</code></pre>
+
+          <h4>Get a pin's visits</h4>
+          <code>{`GET /pins/{pinId}/visits`}</code>
+          <pre className="docs-example">{`curl ${apiUri}/pins/90/visits`}</pre>
+          <pre className="prettyprint"><code className="javascript">{`200 OK
+[
+  {
+    userId: 188,
+    pinId: 188,
+    dateCreated: '2015-11-03T00:49:13.000Z'
+  }
+]
+`}</code></pre>
 
           <h4>Flag a pin</h4>
           <code>{`PUT /pins/{pinId}/flags/{userId}`}</code>
@@ -392,12 +400,12 @@ class DocPage extends React.Component {
           <pre className="prettyprint"><code className="javascript">{`204 No Content`}</code></pre>
 
           <h4>Tag a pin</h4>
-          <code>{`PUT /pins/{pinId}/tags/{userId}`}</code>
+          <code>{`PUT /pins/{pinId}/tags/{tagId}`}</code>
           <pre className="docs-example">{`curl -X PUT ${apiUri}/pins/90/tags/1`}</pre>
           <pre className="prettyprint"><code className="javascript">{`204 No Content`}</code></pre>
 
-          <h4>Un-flag a pin</h4>
-          <code>{`DELETE /pins/{pinId}/tags/{userId}`}</code>
+          <h4>Un-tag a pin</h4>
+          <code>{`DELETE /pins/{pinId}/tags/{tagId}`}</code>
           <pre className="docs-example">{`curl -X DELETE ${apiUri}/pins/90/tags/1`}</pre>
           <pre className="prettyprint"><code className="javascript">{`204 No Content`}</code></pre>
 
@@ -540,10 +548,55 @@ class DocPage extends React.Component {
   "dateModified":"2015-10-23T02:11:53.000Z"
 }`}</code></pre>
 
-          <h4>Delete a image</h4>
+          <h4>Delete an image</h4>
           <code>{`DELETE /images/{imageId}`}</code>
           <pre className="docs-example">{`curl -X DELETE ${apiUri}/images/14`}</pre>
           <pre className="prettyprint"><code className="javascript">{`204 No Content`}</code></pre>
+
+          <h3 id="api-imagesizes">Image Sizes</h3>
+          <h4>Get image sizes</h4>
+          <code>{`GET /imagesizes`}</code>
+          <pre className="docs-example">{`curl ${apiUri}/imagesizes`}</pre>
+          <pre className="prettyprint"><code className="javascript">{`200 OK
+[
+  {
+    "imageSizeId": 1,
+    "name": "square",
+    "height": 60,
+    "width": 60
+  },
+  {
+    "imageSizeId": 2,
+    "name": "tiny",
+    "height": 0,
+    "width": 32
+  },
+  {
+    "imageSizeId": 3,
+    "name": "thumbnail",
+    "height": 0,
+    "width": 100
+  },
+  {
+    "imageSizeId": 4,
+    "name": "small",
+    "height": 0,
+    "width": 240
+  },
+  {
+    "imageSizeId": 5,
+    "name": "medium",
+    "height": 0,
+    "width": 500
+  },
+  {
+    "imageSizeId": 6,
+    "name": "large",
+    "height": 0,
+    "width": 600
+  }
+]
+`}</code></pre>
 
           <h3 id="api-tags">Tags</h3>
 

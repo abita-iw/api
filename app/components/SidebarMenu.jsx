@@ -22,6 +22,7 @@ class SidebarMenu extends React.Component {
               <li><a href="#api-pins">Pins</a></li>
               <li><a href="#api-descriptions">Descriptions</a></li>
               <li><a href="#api-images">Images</a></li>
+              <li><a href="#api-imagesizes">Imagesizes</a></li>
               <li><a href="#api-tags">Tags</a></li>
             </ul>
           </li>

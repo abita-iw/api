@@ -38,12 +38,13 @@ describe('REST API', function() {
           });
           done();
         });
-    })
+    });
   });
 
   describe('Images', function() {
     let newUserId = null;
     let newPinId = null;
+    let newImageId = null;
     before (function(done) {
       api
         .post('users')
@@ -98,6 +99,17 @@ describe('REST API', function() {
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to.have.all.keys(models.image);
+          newImageId = res.body.imageId;
+          return done();
+        });
+    });
+
+    it('Should delete an image', function(done) {
+      api
+        .del(`images/${newImageId}`)
+        .expect(204)
+        .end(function(err, res) {
+          if (err) return done(err);
           return done();
         });
     });
@@ -190,6 +202,44 @@ describe('REST API', function() {
         });
     });
 
+        it('Should visit a pin', function(done) {
+      api
+        .put(`users/${newUserId}/visits/${newPinId}`)
+        .expect(204)
+        .end(function(err) {
+          if (err) return done(err);
+          return done();
+        });
+    });
+
+    it("Should get a user's visited pins", function(done) {
+      api
+        .get(`users/${newUserId}/visits`)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).instanceof(Array);
+          res.body.forEach(visitation => {
+            expect(visitation).to.have.all.keys(models.visitation);
+          });
+          return done();
+        });
+    });
+
+    it("Should get a user's descriptions", function(done) {
+      api
+        .get(`users/${newUserId}/descriptions`)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).instanceof(Array);
+          res.body.forEach(description => {
+            expect(description).to.have.all.keys(models.description);
+          });
+          return done();
+        });
+    });
+
     it('Should delete a user', function(done) {
       api
         .del(`users/${newUserId}`)
@@ -201,7 +251,10 @@ describe('REST API', function() {
     });
 
     after(function() {
-      QueryUtility.query(`DELETE FROM stars WHERE pinId = '${newPinId}' AND userId = '${newUserId}'`).then(function() {
+      Promise.all([
+        QueryUtility.query(`DELETE FROM stars WHERE pinId = '${newPinId}' AND userId = '${newUserId}'`),
+        QueryUtility.query(`DELETE FROM visitations WHERE pinId = '${newPinId}' AND userId = '${newUserId}'`)
+      ]).then(function() {
         QueryUtility.query(`DELETE FROM pins WHERE pinId = '${newPinId}'`).then(function() {
           QueryUtility.query(`DELETE FROM users WHERE userId = '${newUserId}'`);
         });
@@ -210,21 +263,44 @@ describe('REST API', function() {
   });
 
   describe('Pins', function() {
-
     let newPinId = null;
     let newUserId = null;
+    let newTagId = null;
+    let updatedCaption = 'UPDATED_CAPTION';
+    let testTag = 'TEST_TAG';
     before(function(done) {
-      api
-        .post('users')
-        .send({
-          email: testEmail
+      Promise.all([
+        new Promise(function(resolve, reject) {
+          api
+           .post('users')
+           .send({
+             email: testEmail
+           })
+           .expect(201)
+           .end(function(err, res) {
+             if (err) reject(err);
+             newUserId = res.body.userId;
+             resolve();
+           });
+        }),
+        new Promise(function(resolve, reject) {
+          api
+           .post('tags')
+           .send({
+             name: testTag
+           })
+           .expect(201)
+           .end(function(err, res) {
+             if (err) reject(err);
+             newTagId = res.body.tagId;
+             resolve();
+           });
         })
-        .expect(201)
-        .end(function(err, res) {
-          if (err) return done(err);
-          newUserId = res.body.userId;
-          return done();
-        });
+      ]).then(function() {
+        return done()
+      }).catch(function(err) {
+        return done(err);
+      });
     });
 
     it('Should create a new pin', function(done) {
@@ -235,7 +311,6 @@ describe('REST API', function() {
           typeId: 1,
           latitude: 0,
           longitude: 0,
-          description: 'test',
           caption: testCaption
         })
         .expect(201)
@@ -254,6 +329,26 @@ describe('REST API', function() {
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to.have.all.keys(models.pin);
+          return done();
+        });
+    });
+
+    it('Should update a pin', function(done) {
+      api
+        .put(`pins`)
+        .send({
+          pinId: newPinId,
+          userId: newUserId,
+          typeId: 1,
+          latitude: 0,
+          longitude: 0,
+          caption: updatedCaption
+        })
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).to.have.all.keys(models.pin);
+          expect(res.body.caption).to.equal(updatedCaption);
           return done();
         });
     });
@@ -278,42 +373,69 @@ describe('REST API', function() {
         });
     });
 
-
-  });
-
-  describe('Stars', function() {
-    let newUserId = null;
-    let newPinId = null;
-    before (function(done) {
+    it('Should log a pin visit', function(done) {
       api
-        .post('users')
-        .send({
-          email: testEmail
-        })
-        .expect(201)
+        .put(`pins/${newPinId}/visits/${newUserId}`)
+        .expect(204)
         .end(function(err, res) {
           if (err) return done(err);
-          newUserId = res.body.userId;
-          api
-            .post('pins')
-            .send({
-              userId: newUserId,
-              typeId: 1,
-              latitude: 0,
-              longitude: 0,
-              description: 'Test',
-              caption: testCaption
-            })
-            .expect(201)
-            .end(function(err, res) {
-              if (err) reject(err);
-              newPinId = res.body.pinId;
-              return done();
-            });
+          return done();
         });
     });
 
-    it('Should star a pin', function(done) {
+    it("Should get a pin's visits", function(done) {
+      api
+        .get(`pins/${newPinId}/visits`)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).instanceof(Array);
+          res.body.forEach(visit => expect(visit).to.have.all.keys(models.visitation));
+          return done();
+        });
+    });
+
+    it('Should flag a pin', function(done) {
+      api
+        .put(`pins/${newPinId}/flags/${newUserId}`)
+        .expect(204)
+        .end(function(err, res) {
+          if (err) return done(err);
+          return done();
+        });
+    });
+
+    it('Should un-flag a pin', function(done) {
+      api
+        .del(`pins/${newPinId}/flags/${newUserId}`)
+        .expect(204)
+        .end(function(err, res) {
+          if (err) return done(err);
+          return done();
+        });
+    });
+
+    it('Should tag a pin', function(done) {
+      api
+        .put(`pins/${newPinId}/tags/${newTagId}`)
+        .expect(204)
+        .end(function(err, res) {
+          if (err) return done(err);
+          return done();
+        });
+    });
+
+    it('Should un-tag a pin', function(done) {
+      api
+        .del(`pins/${newPinId}/tags/${newTagId}`)
+        .expect(204)
+        .end(function(err, res) {
+          if (err) return done(err);
+          return done();
+        });
+    });
+
+        it('Should star a pin', function(done) {
       api
         .put(`users/${newUserId}/stars/${newPinId}`)
         .expect(204)
@@ -333,13 +455,24 @@ describe('REST API', function() {
         });
     });
 
+    it('Should delete a pin', function(done) {
+      api
+        .del(`pins/${newPinId}`)
+        .expect(204)
+        .end(function(err, res) {
+          if (err) return done(err);
+          return done();
+        });
+    });
+
     after(function() {
+      QueryUtility.query(`DELETE FROM tags WHERE tagId = '${newTagId}'`);
       QueryUtility.query(`DELETE FROM stars WHERE userId = ${newUserId} AND pinId = ${newPinId}`);
     });
   });
 
   describe('Tags', function() {
-    let testTag = 'TEST_TAG';
+    let testTag = 'TEST_TAG_INSTANCE';
     let newTagId = null;
     it('Should create a new tag', function(done) {
       api
