@@ -1,5 +1,5 @@
 let AppConstants = {
-  baseUri: 'https://abitatech.net:5000/',
+  baseUri: 'api.abitatech.net/',
   imageSizes: [
     {
       "imageSizeId": 1,
