@@ -1,10 +1,15 @@
 import React from 'react';
-import { Router, Route, DefaultRoute } from 'react-router';
+import { Router, Route, IndexRedirect } from 'react-router';
 import App from './components/App.jsx';
 import DocPage from './pages/DocPage.jsx';
+import AuthPage from './pages/AuthPage.jsx';
 
 export default (
-  <Route path='/' component={App}>
-    <Route path='documentation' component={DocPage}/>
-  </Route>
+  <Router>
+    <Route path='/' component={App}>
+      <IndexRedirect to='/documentation'/>
+      <Route path='documentation' component={DocPage}/>
+      <Route path='auth' component={AuthPage}/>
+    </Route>
+  </Router>
 );
