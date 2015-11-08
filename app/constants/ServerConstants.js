@@ -6,5 +6,7 @@ export default {
   saltSize: 10,
   momentStrings: {
     url: 'YYYY-MM-DD HH:mm:ss'
-  }
+  },
+  metersPerDegree: 111000,
+  defaultPinLimit: 50
 };

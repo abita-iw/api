@@ -26,20 +26,117 @@ class DocPage extends React.Component {
               <h3>Users</h3>
               <table className="table table-bordered">
                 <thead>
+                  <tr>
+                    <th>Field</th>
+                    <th>Type</th>
+                    <th>Required</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>userId</td>
+                    <td>int</td>
+                    <td>yes</td>
+                  </tr>
+                  <tr>
+                    <td>email</td>
+                    <td>string</td>
+                    <td>yes</td>
+                  </tr>
+                  <tr>
+                    <td>dateCreated</td>
+                    <td>string</td>
+                    <td>yes</td>
+                  </tr>
+                  <tr>
+                    <td>dateModified</td>
+                    <td>string</td>
+                    <td>yes</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 id="data-pins">Pins</h3>
+            <table className="table table-bordered">
+              <thead>
                 <tr>
                   <th>Field</th>
                   <th>Type</th>
                   <th>Required</th>
                 </tr>
-                </thead>
-                <tbody>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>pinId</td>
+                  <td>int</td>
+                  <td>yes</td>
+                </tr>
                 <tr>
                   <td>userId</td>
                   <td>int</td>
                   <td>yes</td>
                 </tr>
                 <tr>
-                  <td>email</td>
+                  <td>pinType</td>
+                  <td>string</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>caption</td>
+                  <td>string</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>latitude</td>
+                  <td>double</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>longitude</td>
+                  <td>double</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>dateCreated</td>
+                  <td>string</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>dateModified</td>
+                  <td>string</td>
+                  <td>yes</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3 id="data-descriptions">Descriptions</h3>
+            <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Required</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>descriptionId</td>
+                  <td>int</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>userId</td>
+                  <td>int</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>pinId</td>
+                  <td>int</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>text</td>
                   <td>string</td>
                   <td>yes</td>
                 </tr>
@@ -53,174 +150,77 @@ class DocPage extends React.Component {
                   <td>string</td>
                   <td>yes</td>
                 </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <h3 id="data-pins">Pins</h3>
-            <table className="table table-bordered">
-              <thead>
-              <tr>
-                <th>Field</th>
-                <th>Type</th>
-                <th>Required</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td>pinId</td>
-                <td>int</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>userId</td>
-                <td>int</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>pinType</td>
-                <td>string</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>caption</td>
-                <td>string</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>latitude</td>
-                <td>double</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>longitude</td>
-                <td>double</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>dateCreated</td>
-                <td>string</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>dateModified</td>
-                <td>string</td>
-                <td>yes</td>
-              </tr>
-              </tbody>
-            </table>
-
-            <h3 id="data-descriptions">Descriptions</h3>
-            <table className="table table-bordered">
-              <thead>
-              <tr>
-                <th>Field</th>
-                <th>Type</th>
-                <th>Required</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td>descriptionId</td>
-                <td>int</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>userId</td>
-                <td>int</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>pinId</td>
-                <td>int</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>text</td>
-                <td>string</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>dateCreated</td>
-                <td>string</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>dateModified</td>
-                <td>string</td>
-                <td>yes</td>
-              </tr>
               </tbody>
             </table>
 
             <h3 id="data-images">Images</h3>
             <table className="table table-bordered">
               <thead>
-              <tr>
-                <th>Field</th>
-                <th>Type</th>
-                <th>Required</th>
-              </tr>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Required</th>
+                </tr>
               </thead>
               <tbody>
-              <tr>
-                <td>imageId</td>
-                <td>int</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>userId</td>
-                <td>int</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>pinId</td>
-                <td>int</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>dateCreated</td>
-                <td>string</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>dateModified</td>
-                <td>string</td>
-                <td>yes</td>
-              </tr>
+                <tr>
+                  <td>imageId</td>
+                  <td>int</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>userId</td>
+                  <td>int</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>pinId</td>
+                  <td>int</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>dateCreated</td>
+                  <td>string</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>dateModified</td>
+                  <td>string</td>
+                  <td>yes</td>
+                </tr>
               </tbody>
             </table>
 
             <h3 id="data-tags">Tags</h3>
             <table className="table table-bordered">
               <thead>
-              <tr>
-                <th>Field</th>
-                <th>Type</th>
-                <th>Required</th>
-              </tr>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Required</th>
+                </tr>
               </thead>
               <tbody>
-              <tr>
-                <td>tagId</td>
-                <td>int</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>name</td>
-                <td>string</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>dateCreated</td>
-                <td>string</td>
-                <td>yes</td>
-              </tr>
-              <tr>
-                <td>dateModified</td>
-                <td>string</td>
-                <td>yes</td>
-              </tr>
+                <tr>
+                  <td>tagId</td>
+                  <td>int</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>name</td>
+                  <td>string</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>dateCreated</td>
+                  <td>string</td>
+                  <td>yes</td>
+                </tr>
+                <tr>
+                  <td>dateModified</td>
+                  <td>string</td>
+                  <td>yes</td>
+                </tr>
               </tbody>
             </table>
           </section>
@@ -304,6 +304,67 @@ class DocPage extends React.Component {
           <pre className="prettyprint"><code className="javascript">204 No Content</code></pre>
 
           <h3 id="api-pins">Pins</h3>
+
+          <h4>Search Pins</h4>
+          <code>Get /pins</code>
+          <p>
+            Return an array of pins that are within a given spherical rectangle centered
+            at (latitude, longitude) with side length 2 * radius. Pins are sorted according
+            to distance from the center.
+          </p>
+          <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th>Query Param</th>
+                <th>Type</th>
+                <th>Required</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>latitude</td>
+                <td>float</td>
+                <td>no</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>longitude</td>
+                <td>float</td>
+                <td>no</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>radius</td>
+                <td>int</td>
+                <td>no</td>
+                <td>Side length in meters</td>
+              </tr>
+              <tr>
+                <td>limit</td>
+                <td>int</td>
+                <td>no</td>
+                <td>Default is 50</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <pre className="docs-example">{`curl ${apiUri}/pins?latitude=10.234&longitude=23.482&radius=100`}</pre>
+          <pre className="prettyprint"><code className="javascript">{`200 OK
+[
+  {
+    "pinId": 212,
+    "userId": 213,
+    "pinType": "Wildlife",
+    "latitude": 10.2335,
+    "longitude": 23.4828,
+    "dateCreated": "2015-11-03T02:12:30.000Z",
+    "dateModified": "2015-11-03T02:12:31.000Z",
+    "caption": "UPDATED_CAPTION"
+  }
+]
+`}</code></pre>
+
 
           <h4>Create a pin</h4>
           <code>POST /pins</code>

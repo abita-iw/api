@@ -9,7 +9,7 @@ import TagService from '../services/TagService';
 let PinController = ControllerUtility.makeController();
 
 PinController.get('/', function(req, res) {
-  PinService.getPins().then(function(rows) {
+  PinService.getPins(req.query.latitude, req.query.longitude, req.query.radius).then(function(rows) {
     res.send(rows);
   }).catch(function(err) {
     res.status(400).send(err);
