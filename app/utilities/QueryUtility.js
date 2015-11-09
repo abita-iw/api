@@ -1,5 +1,6 @@
 import mysql from 'mysql';
 import pool from './ConnectionPool';
+import HttpStatusCodes from '../constants/HttpStatusCodes';
 
 let QueryUtility = {
   query: function(sql, inserts) {
@@ -15,6 +16,30 @@ let QueryUtility = {
         });
       });
     });
+  },
+
+  error: function(message, httpErrorCode = HttpStatusCodes.BAD_REQUEST) {
+    return new Promise(function(resolve, reject) {
+      reject({
+        message: message,
+        code: httpErrorCode 
+      });
+    });
+  },
+
+  sendError: function(res, error) {
+    if (error.code) 
+      res.status(error.code).send(error.message);
+    else
+      res.status(HttpStatusCodes.SERVER_ERROR).send(error);
+  },
+
+  handleSingle: function(res, rows, successCode = HttpStatusCodes.OK, errorCode = HttpStatusCodes.SERVER_ERROR) {
+    if (rows.length != 1) {
+      QueryUtility.error({ code: errorCode });
+      return;
+    }
+    else res.status(successCode).send(rows[0]);
   }
 };
 

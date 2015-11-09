@@ -6,6 +6,7 @@ import express from 'express';
 import QueryUtility from '../app/utilities/QueryUtility';
 import ApiApp from '../app/ApiApp';
 import models from '../app/models/index';
+import HttpStatusCodes from '../app/constants/HttpStatusCodes';
 
 let expect = chai.expect;
 let API_PORT = 4001;
@@ -30,6 +31,7 @@ describe('REST API', function() {
       api
         .get('imageSizes')
         .expect('Content-Type', /json/)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
@@ -51,7 +53,7 @@ describe('REST API', function() {
         .send({
           email: testEmail
         })
-        .expect(201)
+        .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
           if (err) return done(err);
           newUserId = res.body.userId;
@@ -65,7 +67,7 @@ describe('REST API', function() {
               description: 'Test',
               title: testTitle
             })
-            .expect(201)
+            .expect(HttpStatusCodes.CREATED)
             .end(function(err, res) {
               if (err) return done(err);
               newPinId = res.body.pinId;
@@ -78,6 +80,7 @@ describe('REST API', function() {
       api
         .get('images')
         .expect('Content-Type', /json/)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
@@ -96,6 +99,7 @@ describe('REST API', function() {
         .field('userId', newUserId)
         .field('pinId', newPinId)
         .expect('Content-Type', /json/)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to.have.all.keys(models.image);
@@ -107,7 +111,7 @@ describe('REST API', function() {
     it('Should delete an image', function(done) {
       api
         .del(`images/${newImageId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -120,7 +124,6 @@ describe('REST API', function() {
   });
 
   describe('Users', function() {
-
     let newUserId = null;
     let newPinId = null;
     it('Should create a new user', function(done) {
@@ -129,7 +132,7 @@ describe('REST API', function() {
         .send({
           email: testEmail
         })
-        .expect(201)
+        .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
           if (err) return done(err);
           newUserId = res.body.userId;
@@ -144,7 +147,7 @@ describe('REST API', function() {
               description: 'Test',
               title: testTitle
             })
-            .expect(201)
+            .expect(HttpStatusCodes.CREATED)
             .end(function(err, res) {
               if (err) return done(err);
               newPinId = res.body.pinId;
@@ -156,7 +159,7 @@ describe('REST API', function() {
     it('Should retrieve a single user', function(done) {
       api
         .get(`users/${newUserId}`)
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to.have.all.keys(models.user);
@@ -167,7 +170,7 @@ describe('REST API', function() {
     it('Should retrieve a list of all users', function(done) {
       api
         .get('users')
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
@@ -181,7 +184,7 @@ describe('REST API', function() {
     it('Should create a user star', function(done) {
       api
         .put(`users/${newUserId}/stars/${newPinId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -191,7 +194,7 @@ describe('REST API', function() {
     it('Should retrieve a list of user stars', function(done) {
       api
         .get(`users/${newUserId}/stars`)
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
@@ -205,7 +208,7 @@ describe('REST API', function() {
         it('Should visit a pin', function(done) {
       api
         .put(`users/${newUserId}/visits/${newPinId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err) {
           if (err) return done(err);
           return done();
@@ -215,7 +218,7 @@ describe('REST API', function() {
     it("Should get a user's visited pins", function(done) {
       api
         .get(`users/${newUserId}/visits`)
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
@@ -229,7 +232,7 @@ describe('REST API', function() {
     it("Should get a user's descriptions", function(done) {
       api
         .get(`users/${newUserId}/descriptions`)
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
@@ -243,7 +246,7 @@ describe('REST API', function() {
     it('Should delete a user', function(done) {
       api
         .del(`users/${newUserId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err) {
           if (err) return done(err);
           return done();
@@ -276,7 +279,7 @@ describe('REST API', function() {
            .send({
              email: testEmail
            })
-           .expect(201)
+           .expect(HttpStatusCodes.CREATED)
            .end(function(err, res) {
              if (err) reject(err);
              newUserId = res.body.userId;
@@ -289,7 +292,7 @@ describe('REST API', function() {
            .send({
              name: testTag
            })
-           .expect(201)
+           .expect(HttpStatusCodes.CREATED)
            .end(function(err, res) {
              if (err) reject(err);
              newTagId = res.body.tagId;
@@ -313,7 +316,7 @@ describe('REST API', function() {
           longitude: 0,
           title: testTitle
         })
-        .expect(201)
+        .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
           if (err) return done(err);
           newPinId = res.body.pinId;
@@ -325,7 +328,7 @@ describe('REST API', function() {
     it('Should retrieve a single pin', function(done) {
       api
         .get(`pins/${newPinId}`)
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to.have.all.keys(models.pin);
@@ -344,7 +347,7 @@ describe('REST API', function() {
           longitude: 0,
           title: updatedTitle
         })
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to.have.all.keys(models.pin);
@@ -356,7 +359,7 @@ describe('REST API', function() {
     it('Should retrieve all pins', function(done) {
       api
         .get(`pins`)
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -366,7 +369,7 @@ describe('REST API', function() {
     it('Should delete a pin', function(done) {
       api
         .del(`pins/${newPinId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -376,7 +379,7 @@ describe('REST API', function() {
     it('Should log a pin visit', function(done) {
       api
         .put(`pins/${newPinId}/visits/${newUserId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -386,7 +389,7 @@ describe('REST API', function() {
     it("Should get a pin's visits", function(done) {
       api
         .get(`pins/${newPinId}/visits`)
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
@@ -398,7 +401,7 @@ describe('REST API', function() {
     it('Should flag a pin', function(done) {
       api
         .put(`pins/${newPinId}/flags/${newUserId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -408,7 +411,7 @@ describe('REST API', function() {
     it('Should un-flag a pin', function(done) {
       api
         .del(`pins/${newPinId}/flags/${newUserId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -418,7 +421,7 @@ describe('REST API', function() {
     it('Should tag a pin', function(done) {
       api
         .put(`pins/${newPinId}/tags/${newTagId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -428,7 +431,7 @@ describe('REST API', function() {
     it('Should un-tag a pin', function(done) {
       api
         .del(`pins/${newPinId}/tags/${newTagId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -438,7 +441,7 @@ describe('REST API', function() {
         it('Should star a pin', function(done) {
       api
         .put(`users/${newUserId}/stars/${newPinId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -448,7 +451,7 @@ describe('REST API', function() {
     it('Should unstar a pin', function(done) {
       api
         .del(`users/${newUserId}/stars/${newPinId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -458,7 +461,7 @@ describe('REST API', function() {
     it('Should delete a pin', function(done) {
       api
         .del(`pins/${newPinId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -480,7 +483,7 @@ describe('REST API', function() {
         .send({
           name: testTag
         })
-        .expect(201)
+        .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
           if (err) return done(err);
           newTagId = res.body.tagId;
@@ -492,7 +495,7 @@ describe('REST API', function() {
     it('Should retrieve a specific tag', function(done) {
       api
         .get(`tags/${newTagId}`)
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to.have.all.keys(models.tag);
@@ -516,7 +519,7 @@ describe('REST API', function() {
         .send({
           email: testEmail
         })
-        .expect(201)
+        .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
           if (err) return done(err);
           newUserId = res.body.userId;
@@ -530,7 +533,7 @@ describe('REST API', function() {
               description: 'Test',
               title: testTitle
             })
-            .expect(201)
+            .expect(HttpStatusCodes.CREATED)
             .end(function(err, res) {
               if (err) return done(err);
               newPinId = res.body.pinId;
@@ -547,7 +550,7 @@ describe('REST API', function() {
           pinId: newPinId,
           text: descriptionText,
         })
-        .expect(201)
+        .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
           if (err) return done(err);
           newDescriptionId = res.body.descriptionId;
@@ -559,7 +562,7 @@ describe('REST API', function() {
     it('Should retrieve a single description', function(done) {
       api
         .get(`descriptions/${newDescriptionId}`)
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to.have.all.keys(models.description);
@@ -578,7 +581,7 @@ describe('REST API', function() {
       api
         .put(`descriptions`)
         .send(newDescription)
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to.have.all.keys(models.description);
@@ -590,7 +593,7 @@ describe('REST API', function() {
     it('Should delete a description', function(done) {
       api
         .del(`descriptions/${newDescriptionId}`)
-        .expect(204)
+        .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
           return done();
@@ -606,7 +609,7 @@ describe('REST API', function() {
     it('Should retrieve a list of pin types', function(done) {
       api
         .get(`pinTypes`)
-        .expect(200)
+        .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
           res.body.forEach(pinType => expect (pinType).to.have.all.keys(models.pinType));

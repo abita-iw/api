@@ -5,132 +5,99 @@ import VisitationService from '../services/VisitationService';
 import DescriptionService from '../services/DescriptionService';
 import ImageService from '../services/ImageService';
 import TagService from '../services/TagService';
+import HttpStatusCodes from '../constants/HttpStatusCodes';
+import { sendError, handleSingle } from '../utilities/QueryUtility';
 
 let PinController = ControllerUtility.makeController();
 
 PinController.get('/', function(req, res) {
-  PinService.getPins(req.query.latitude, req.query.longitude, req.query.radius).then(function(rows) {
-    res.send(rows);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  PinService.getPins(req.query.latitude, req.query.longitude, req.query.radius)
+    .then(rows => res.send(rows))
+    .catch(err => sendError(res, err));
 });
 
 PinController.get('/:pinId', function(req, res) {
-  PinService.getPin(req.params.pinId).then(function(rows) {
-    if (rows.length != 1) res.status(400).send('An error has occurred');
-    else res.send(rows[0]);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  PinService.getPin(req.params.pinId)
+    .then(rows => handleSingle(res, rows, HttpStatusCodes.OK, HttpStatusCodes.NOT_FOUND))
+    .catch(err => sendError(res, err));
 });
 
 PinController.get('/:pinId/descriptions', function(req, res) {
-  DescriptionService.getPinDescriptions(req.params.pinId).then(function(rows) {
-    res.send(rows);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  DescriptionService.getPinDescriptions(req.params.pinId)
+    .then(rows => res.send(rows))
+    .catch(err => sendError(res, err));
 });
 
 PinController.get('/:pinId/images', function(req, res) {
-  ImageService.getPinImages(req.params.pinId).then(function(rows) {
-    res.send(rows);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  ImageService.getPinImages(req.params.pinId)
+    .then(rows => res.send(rows))
+    .catch(err => sendError(res, err));
 });
 
 PinController.post('/', function(req, res) {
   let pin = req.body;
   PinService.createPin(pin).then(function(result) {
-    PinService.getPin(result.insertId).then(function(rows) {
-      if (rows.length == 0) res.status(400).send('An error has occurred');
-      else res.status(201).send(rows[0]);
-    }).catch(function(err) {
-      res.status(400).send(err);
-    });
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+    PinService.getPin(result.insertId)
+      .then(rows => handleSingle(res, rows, HttpStatusCodes.CREATED))
+      .catch(err => sendError(res, err));
+  }).catch(err => sendError(res, err));
 });
 
 PinController.put('/', function(req, res) {
   let pin = req.body;
   PinService.updatePin(pin).then(function() {
-    PinService.getPin(pin.pinId).then(function(rows) {
-      if (rows.length == 0) res.status(400).send('An error has occurred');
-      else res.send(rows[0]);
-    }).catch(function(err) {
-      res.status(400).send(err);
-    });
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+    PinService.getPin(pin.pinId)
+      .then(rows => handleSingle(res, rows))
+      .catch(err => sendError(res, err));
+  }).catch(err => sendError(res, err));
 });
 
 PinController.delete('/:pinId', function(req, res) {
-  PinService.deletePin(req.params.pinId).then(function() {
-    res.sendStatus(204);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  PinService.deletePin(req.params.pinId)
+    .then(() => res.sendStatus(HttpStatusCodes.NO_CONTENT))
+    .catch(err => sendError(res, err));
 });
 
 PinController.put('/:pinId/flags/:userId', function(req, res) {
-  FlagService.createFlag(req.params.userId, req.params.pinId).then(function() {
-    res.sendStatus(204);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  FlagService.createFlag(req.params.userId, req.params.pinId)
+    .then(() => res.sendStatus(HttpStatusCodes.NO_CONTENT))
+    .catch(err => sendError(res, err));
 });
 
 PinController.delete('/:pinId/flags/:userId', function(req, res) {
-  FlagService.deleteFlag(req.params.userId, req.params.pinId).then(function() {
-    res.sendStatus(204);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  FlagService.deleteFlag(req.params.userId, req.params.pinId)
+    .then(() => res.sendStatus(HttpStatusCodes.NO_CONTENT))
+    .catch(err => sendError(res, err));
 });
 
 PinController.get('/:pinId/tags', function(req, res) {
-  TagService.getPinTags(req.params.pinId).then(function(rows) {
-    res.send(rows);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  TagService.getPinTags(req.params.pinId)
+    .then(rows => res.send(rows))
+    .catch(err => sendError(res, err));
 });
 
 PinController.put('/:pinId/tags/:tagId', function(req, res) {
-  TagService.tagPin(req.params.pinId, req.params.tagId).then(function() {
-    res.sendStatus(204);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  TagService.tagPin(req.params.pinId, req.params.tagId)
+     .then(() => res.sendStatus(HttpStatusCodes.NO_CONTENT))
+    .catch(err => sendError(res, err));
 });
 
 PinController.delete('/:pinId/tags/:tagId', function(req, res) {
-  TagService.untagPin(req.params.pinId, req.params.tagId).then(function() {
-    res.sendStatus(204);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  TagService.untagPin(req.params.pinId, req.params.tagId)
+    .then(() => res.sendStatus(HttpStatusCodes.NO_CONTENT))
+    .catch(err => sendError(res, err));
 });
 
 PinController.put('/:pinId/visits/:userId', function(req, res) {
   VisitationService.createVisitation(req.params.userId, req.params.pinId).then(function() {
-    res.sendStatus(204);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+    res.sendStatus(HttpStatusCodes.NO_CONTENT);
+  }).catch(err => sendError(res, err));
 });
 
 PinController.get('/:pinId/visits', function(req, res) {
-  VisitationService.getPinVisitations(req.params.pinId).then(function(rows) {
-    res.send(rows);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  VisitationService.getPinVisitations(req.params.pinId)
+    .then(rows => res.send(rows))
+    .catch(err => sendError(res, err));
 });
 
 export default PinController;

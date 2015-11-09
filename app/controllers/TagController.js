@@ -1,35 +1,29 @@
 import ControllerUtility from '../utilities/ControllerUtility';
 import TagService from '../services/TagService';
+import HttpStatusCodes from '../constants/HttpStatusCodes';
+import { sendError, handleSingle } from '../utilities/QueryUtility';
 
 let TagController = ControllerUtility.makeController();
 
 TagController.get('/', function(req, res) {
-  TagService.getTags().then(function(rows) {
-    res.send(rows);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  TagService.getTags()
+    .then(rows => res.send(rows))
+    .catch(err => sendError(res, err));
 });
 
 TagController.get('/:tagId', function(req, res) {
-  TagService.getTag(req.params.tagId).then(function(rows) {
-    if (rows.length != 1) res.status(400).send('An error has occurred');
-    else res.send(rows[0]);
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+  TagService.getTag(req.params.tagId)
+    .then(rows => handleSingle(res, rows, HttpStatusCodes.OK, HttpStatusCodes.NOT_FOUND))
+    .catch(err => sendError(res, err));
 });
 
 TagController.post('/', function(req, res) {
   let tag = req.body;
   TagService.createTag(tag).then(function(result) {
-    TagService.getTag(result.insertId).then(function(rows) {
-      if (rows.length != 1) res.status(400).send('An error has occurred');
-      else res.status(201).send(rows[0]);
-    })
-  }).catch(function(err) {
-    res.status(400).send(err);
-  });
+    TagService.getTag(result.insertId)
+      .then(rows => handleSingle(res, rows, HttpStatusCodes.CREATED))
+      .catch(err => sendError(res, err));
+  }).catch(err => sendError(res, err));
 });
 
 export default TagController;
