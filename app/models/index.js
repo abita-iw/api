@@ -10,5 +10,5 @@ export default {
   tag: ['tagId', 'name', 'dateCreated', 'dateModified'],
   pinTag: ['pinId', 'tagId'],
   visitation: ['userId', 'pinId', 'dateCreated'],
-  pin: ['pinId', 'userId', 'pinType', 'latitude', 'longitude', 'dateCreated', 'dateModified', 'caption']
+  pin: ['pinId', 'userId', 'pinType', 'latitude', 'longitude', 'dateCreated', 'dateModified', 'title']
 };

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `iw_api`.`pins` (
   `pinId` INT NOT NULL AUTO_INCREMENT COMMENT '',
   `userId` INT NOT NULL COMMENT '',
   `typeId` INT NOT NULL COMMENT '',
-  `caption` VARCHAR(255) NOT NULL COMMENT '',
+  `title` VARCHAR(255) NOT NULL COMMENT '',
   `description` VARCHAR(255) NULL COMMENT '',
   `latitude` FLOAT NOT NULL COMMENT '',
   `longitude` FLOAT NOT NULL COMMENT '',

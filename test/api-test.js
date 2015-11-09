@@ -13,7 +13,7 @@ let API_PORT = 4001;
 describe('REST API', function() {
   let api = supertest(`localhost:${API_PORT}/`);
   let testEmail = 'test@example.com';
-  let testCaption = 'TEST_CAPTION';
+  let testTitle = 'TEST_TITLE';
 
   before(function(done) {
     let app = express();
@@ -63,7 +63,7 @@ describe('REST API', function() {
               latitude: 0,
               longitude: 0,
               description: 'Test',
-              caption: testCaption
+              title: testTitle
             })
             .expect(201)
             .end(function(err, res) {
@@ -142,11 +142,11 @@ describe('REST API', function() {
               latitude: 0,
               longitude: 0,
               description: 'Test',
-              caption: testCaption
+              title: testTitle
             })
             .expect(201)
             .end(function(err, res) {
-              if (err) reject(err);
+              if (err) return done(err);
               newPinId = res.body.pinId;
               return done();
             });
@@ -266,7 +266,7 @@ describe('REST API', function() {
     let newPinId = null;
     let newUserId = null;
     let newTagId = null;
-    let updatedCaption = 'UPDATED_CAPTION';
+    let updatedTitle = 'UPDATED_TITLE';
     let testTag = 'TEST_TAG';
     before(function(done) {
       Promise.all([
@@ -311,7 +311,7 @@ describe('REST API', function() {
           typeId: 1,
           latitude: 0,
           longitude: 0,
-          caption: testCaption
+          title: testTitle
         })
         .expect(201)
         .end(function(err, res) {
@@ -342,13 +342,13 @@ describe('REST API', function() {
           typeId: 1,
           latitude: 0,
           longitude: 0,
-          caption: updatedCaption
+          title: updatedTitle
         })
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).to.have.all.keys(models.pin);
-          expect(res.body.caption).to.equal(updatedCaption);
+          expect(res.body.title).to.equal(updatedTitle);
           return done();
         });
     });
@@ -528,11 +528,11 @@ describe('REST API', function() {
               latitude: 0,
               longitude: 0,
               description: 'Test',
-              caption: testCaption
+              title: testTitle
             })
             .expect(201)
             .end(function(err, res) {
-              if (err) reject(err);
+              if (err) return done(err);
               newPinId = res.body.pinId;
               return done();
             });
@@ -616,7 +616,7 @@ describe('REST API', function() {
   });
 
   after(function() {
-    QueryUtility.query(`DELETE FROM pins WHERE caption = '${testCaption}'`).then(function() {
+    QueryUtility.query(`DELETE FROM pins WHERE title = '${testTitle}'`).then(function() {
       QueryUtility.query(`DELETE FROM users WHERE email = '${testEmail}'`);
     });
   });

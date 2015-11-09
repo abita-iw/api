@@ -83,7 +83,7 @@ class DocPage extends React.Component {
                   <td>yes</td>
                 </tr>
                 <tr>
-                  <td>caption</td>
+                  <td>title</td>
                   <td>string</td>
                   <td>yes</td>
                 </tr>
@@ -360,7 +360,7 @@ class DocPage extends React.Component {
     "longitude": 23.4828,
     "dateCreated": "2015-11-03T02:12:30.000Z",
     "dateModified": "2015-11-03T02:12:31.000Z",
-    "caption": "UPDATED_CAPTION"
+    "title": "UPDATED_TITLE"
   }
 ]
 `}</code></pre>
@@ -374,7 +374,7 @@ class DocPage extends React.Component {
   "typeId": 1,
   "latitude": 0,
   "longitude": 0,
-  "caption": "test caption"
+  "title": "test title"
 }
 `}
           </pre>
@@ -387,7 +387,7 @@ class DocPage extends React.Component {
   "longitude": 0,
   "dateCreated": "2015-10-21T03:55:06.000Z",
   "dateModified": "2015-10-21T03:55:06.000Z",
-  "caption": "test caption"
+  "title": "test title"
 }`}</code></pre>
 
           <h4>Get a pin</h4>
@@ -402,7 +402,7 @@ class DocPage extends React.Component {
   "longitude": 0,
   "dateCreated": "2015-10-21T03:55:06.000Z",
   "dateModified": "2015-10-21T03:55:06.000Z",
-  "caption": "test caption"
+  "title": "test title"
 }`}</code></pre>
 
           <h4>Update a pin</h4>
@@ -413,7 +413,7 @@ class DocPage extends React.Component {
   "userId": 1,
   "latitude": 10,
   "longitude": 10,
-  "caption": "new caption"
+  "title": "new title"
 }`}</pre>
           <pre className="prettyprint"><code className="javascript">{`200 OK
 {
@@ -424,7 +424,7 @@ class DocPage extends React.Component {
   "longitude": 10,
   "dateCreated": "2015-10-21T03:55:06.000Z",
   "dateModified":"2015-10-23T01:15:43.000Z",
-  "caption": "new caption"
+  "title": "new title"
 }`}</code></pre>
 
           <h4>Delete a pin</h4>

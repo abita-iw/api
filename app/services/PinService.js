@@ -18,7 +18,7 @@ SELECT
     longitude,
     dateCreated,
     dateModified,
-    caption
+    title
 FROM
     pins
 JOIN pinTypes
@@ -44,7 +44,6 @@ WHERE
         resolve(sorted.slice(0, limit));
       }).catch(err => reject(err));
     });
-    /*     return query(sql); */
   },
 
   getPin: function(pinId) {
@@ -57,7 +56,7 @@ SELECT
     longitude,
     dateCreated,
     dateModified,
-    caption
+    title
 FROM
     pins
 JOIN pinTypes
@@ -80,12 +79,12 @@ INSERT INTO
         longitude,
         dateCreated,
         dateModified,
-        caption
+        title
     )
 VALUES
     (?,?,?,?,?,?,?)
 `;
-    return query(sql, [pin.userId, pin.typeId, pin.latitude, pin.longitude, now, now, pin.caption]);
+    return query(sql, [pin.userId, pin.typeId, pin.latitude, pin.longitude, now, now, pin.title]);
   },
 
   updatePin: function(pin) {
@@ -98,11 +97,11 @@ SET
     latitude = ?,
     longitude = ?,
     dateModified = ?,
-    caption = ?
+    title = ?
 WHERE
     pinId = ?
 `;
-    return query(sql, [pin.typeId, pin.latitude, pin.longitude, now, pin.caption, pin.pinId]);
+    return query(sql, [pin.typeId, pin.latitude, pin.longitude, now, pin.title, pin.pinId]);
   },
 
   deletePin: function(pinId) {
