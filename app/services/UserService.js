@@ -1,7 +1,8 @@
 import DateUtility from '../utilities/DateUtility';
-import QueryUtility from '../utilities/QueryUtility';
-
-let query = QueryUtility.query;
+import { query, error } from '../utilities/QueryUtility';
+import { validateObject, executePropValidator } from '../utilities/ValidationUtility';
+import models from '../models/index';
+import { int } from '../models/types';
 
 let UserService = {
   getUsers: function () {
@@ -20,6 +21,9 @@ WHERE
   },
 
   getUser: function(userId) {
+    let validationResult = executePropValidator(userId, 'userId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+
     let sql = `
 SELECT
     userId,
@@ -35,6 +39,9 @@ WHERE
   },
 
   createUser: function(user) {
+    let validationResult = validateObject(user, models.user);
+    if (!validationResult.isValid) return error(validationResult.errors);
+
     let now = DateUtility.getNow();
     let sql = `
 INSERT INTO
@@ -46,6 +53,9 @@ VALUES
   },
 
   deleteUser: function(userId) {
+    let validationResult = executePropValidator(userId, 'userId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+    
     return query("UPDATE users SET isDeleted = true WHERE userId = ?", [userId]);
   }
 };

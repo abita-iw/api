@@ -1,7 +1,8 @@
 import DateUtility from '../utilities/DateUtility';
-import QueryUtility from '../utilities/QueryUtility';
-
-let query = QueryUtility.query;
+import { query, error } from '../utilities/QueryUtility';
+import models from '../models/index';
+import { int } from '../models/types';
+import { validateObject, executePropValidator } from '../utilities/ValidationUtility';
 
 let TagService = {
   getTags: function () {
@@ -18,6 +19,9 @@ FROM
   },
 
   getPinTags: function(pinId) {
+    let validationResult = executePropValidator(pinId, 'pinId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+
     let sql = `
 SELECT
     tags.tagId,
@@ -35,6 +39,9 @@ WHERE
   },
 
   getTag: function(tagId) {
+    let validationResult = executePropValidator(tagId, 'tagId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+
     let sql = `
 SELECT
     tagId,
@@ -50,6 +57,11 @@ WHERE
   },
 
   tagPin: function(pinId, tagId) {
+    let tagValidationResult = executePropValidator(tagId, 'tagId', int);
+    if (!tagValidationResult.isValid) return error(tagValidationResult.error);
+    let pinValidationResult = executePropValidator(pinId, 'pinId', int);
+    if (!pinValidationResult.isValid) return error(pinValidationResult.error);
+
     let sql = `
 INSERT INTO
     pinTags (pinId, tagId)
@@ -60,6 +72,11 @@ VALUES
   },
 
   untagPin: function(pinId, tagId) {
+    let tagValidationResult = executePropValidator(tagId, 'tagId', int);
+    if (!tagValidationResult.isValid) return error(tagValidationResult.error);
+    let pinValidationResult = executePropValidator(pinId, 'pinId', int);
+    if (!pinValidationResult.isValid) return error(pinValidationResult.error);
+
     let sql = `
 DELETE FROM
     pinTags
@@ -71,6 +88,9 @@ WHERE
   },
 
   createTag: function(tag) {
+    let validationResult = validateObject(tag, models.tag);
+    if (!validationResult.isValid) return error(validationResult.errors);
+
     let now = DateUtility.getNow();
     let sql = `
 INSERT INTO

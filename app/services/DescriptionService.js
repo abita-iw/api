@@ -1,7 +1,8 @@
-import QueryUtility from '../utilities/QueryUtility';
 import DateUtility from '../utilities/DateUtility';
-
-let query = QueryUtility.query;
+import { query, error } from '../utilities/QueryUtility';
+import models from '../models/index';
+import { int } from '../models/types';
+import { validateObject, executePropValidator } from '../utilities/ValidationUtility';
 
 let DescriptionService = {
   getDescriptions: function () {
@@ -22,6 +23,9 @@ WHERE
   },
 
   getDescription: function(descriptionId) {
+    let validationResult = executePropValidator(descriptionId, 'descriptionId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+
     let sql = `
 SELECT
     descriptionId,
@@ -39,6 +43,9 @@ WHERE
   },
 
   getUserDescriptions: function(userId) {
+    let validationResult = executePropValidator(userId, 'userId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+    
     let sql = `
 SELECT
     descriptionId,
@@ -56,6 +63,9 @@ WHERE
   },
 
   getPinDescriptions: function(pinId) {
+    let validationResult = executePropValidator(pinId, 'pinid', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+
     let sql = `
 SELECT
     descriptionId,
@@ -73,6 +83,9 @@ WHERE
   },
 
   createDescription: function(description) {
+    let validationResult = validateObject(description, models.description);
+    if (!validationResult.isValid) return error(validationResult.errors);
+
     let now = DateUtility.getNow();
     let sql = `
 INSERT INTO
@@ -84,6 +97,9 @@ VALUES
   },
 
   updateDescription: function(description) {
+    let validationResult = validateObject(description, models.description);
+    if (!validationResult.isValid) return error(validationResult.errors);
+
     let now = DateUtility.getNow();
     let sql = `
 UPDATE
@@ -98,6 +114,9 @@ WHERE
   },
 
   deleteDescription: function(descriptionId) {
+    let validationResult = executePropValidator(descriptionId, 'descriptionId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+
     let sql = `
 UPDATE
     descriptions

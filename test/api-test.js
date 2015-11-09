@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import supertest from 'supertest';
 import { Promise } from 'es6-promise';
 import _ from 'lodash';
@@ -6,9 +6,9 @@ import express from 'express';
 import QueryUtility from '../app/utilities/QueryUtility';
 import ApiApp from '../app/ApiApp';
 import models from '../app/models/index';
+import { validateObject } from '../app/utilities/ValidationUtility';
 import HttpStatusCodes from '../app/constants/HttpStatusCodes';
 
-let expect = chai.expect;
 let API_PORT = 4001;
 
 describe('REST API', function() {
@@ -27,7 +27,7 @@ describe('REST API', function() {
   });
 
   describe('Image Sizes', function() {
-    it ('Should retrive a list of all image sizes', function(done) {
+    it('Should retrive a list of all image sizes', function(done) {
       api
         .get('imageSizes')
         .expect('Content-Type', /json/)
@@ -36,7 +36,8 @@ describe('REST API', function() {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
           res.body.forEach(imageSize => {
-            expect(imageSize).to.have.all.keys(models.imageSize);
+            let validationResult = validateObject(imageSize, models.imageSize);
+            expect(validationResult.isValid).to.equal(true);
           });
           done();
         });
@@ -85,7 +86,8 @@ describe('REST API', function() {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
           res.body.forEach(image => {
-            expect(image).to.have.all.keys(models.image);
+            let validationResult = validateObject(image, models.image);
+            expect(validationResult.isValid).to.equal(true);
           });
           return done();
         });
@@ -102,7 +104,8 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
-          expect(res.body).to.have.all.keys(models.image);
+          let validationResult = validateObject(res.body, models.image);
+          expect(validationResult.isValid).to.equal(true);
           newImageId = res.body.imageId;
           return done();
         });
@@ -126,6 +129,20 @@ describe('REST API', function() {
   describe('Users', function() {
     let newUserId = null;
     let newPinId = null;
+
+    it('Should fail to create a new user with an invalid email', function(done) {
+       api
+        .post('users')
+        .send({
+          email: 'test'
+        })
+        .expect(HttpStatusCodes.BAD_REQUEST)
+        .end(function(err, res) {
+          if (err) return done(err);
+          return done();
+        });
+    });
+
     it('Should create a new user', function(done) {
       api
         .post('users')
@@ -136,7 +153,8 @@ describe('REST API', function() {
         .end(function(err, res) {
           if (err) return done(err);
           newUserId = res.body.userId;
-          expect(res.body).to.have.all.keys(models.user)
+          let validationResult = validateObject(res.body, models.user);
+          expect(validationResult.isValid).to.equal(true);
           api
             .post('pins')
             .send({
@@ -151,6 +169,8 @@ describe('REST API', function() {
             .end(function(err, res) {
               if (err) return done(err);
               newPinId = res.body.pinId;
+              let validationResult = validateObject(res.body, models.pin);
+              expect(validationResult.isValid).to.equal(true);
               return done();
             });
         });
@@ -162,7 +182,8 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
-          expect(res.body).to.have.all.keys(models.user);
+          let validationResult = validateObject(res.body, models.user);
+          expect(validationResult.isValid).to.equal(true);
           return done();
         });
     });
@@ -175,7 +196,8 @@ describe('REST API', function() {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
           res.body.forEach(user => {
-            expect(user).to.have.all.keys(models.user);
+            let validationResult = validateObject(user, models.user);
+            expect(validationResult.isValid).to.equal(true);
           });
           return done();
         });
@@ -199,7 +221,8 @@ describe('REST API', function() {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
           res.body.forEach(user => {
-            expect(user).to.have.all.keys(models.star);
+            let validationResult = validateObject(user, models.star);
+            expect(validationResult.isValid).to.equal(true);
           });
           return done();
         });
@@ -223,7 +246,8 @@ describe('REST API', function() {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
           res.body.forEach(visitation => {
-            expect(visitation).to.have.all.keys(models.visitation);
+            let validationResult = validateObject(visitation, models.visitation);
+            expect(validationResult.isValid).to.equal(true);
           });
           return done();
         });
@@ -237,7 +261,8 @@ describe('REST API', function() {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
           res.body.forEach(description => {
-            expect(description).to.have.all.keys(models.description);
+            let validationResult = validateObject(description, models.description);
+            expect(validationResult.isValid).to.equal(true);
           });
           return done();
         });
@@ -270,7 +295,7 @@ describe('REST API', function() {
     let newUserId = null;
     let newTagId = null;
     let updatedTitle = 'UPDATED_TITLE';
-    let testTag = 'TEST_TAG';
+    let testTag = 'TEST TAG';
     before(function(done) {
       Promise.all([
         new Promise(function(resolve, reject) {
@@ -282,6 +307,8 @@ describe('REST API', function() {
            .expect(HttpStatusCodes.CREATED)
            .end(function(err, res) {
              if (err) reject(err);
+             let validationResult = validateObject(res.body, models.user);
+             expect(validationResult.isValid).to.equal(true);
              newUserId = res.body.userId;
              resolve();
            });
@@ -295,6 +322,8 @@ describe('REST API', function() {
            .expect(HttpStatusCodes.CREATED)
            .end(function(err, res) {
              if (err) reject(err);
+             let validationResult = validateObject(res.body, models.tag);
+             expect(validationResult.isValid).to.equal(true);
              newTagId = res.body.tagId;
              resolve();
            });
@@ -319,8 +348,9 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
           if (err) return done(err);
+          let validationResult = validateObject(res.body, models.pin);
+          expect(validationResult.isValid).to.equal(true);
           newPinId = res.body.pinId;
-          expect(res.body).to.have.all.keys(models.pin);
           return done();
         });
     });
@@ -331,7 +361,8 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
-          expect(res.body).to.have.all.keys(models.pin);
+          let validationResult = validateObject(res.body, models.pin);
+          expect(validationResult.isValid).to.equal(true);
           return done();
         });
     });
@@ -350,7 +381,8 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
-          expect(res.body).to.have.all.keys(models.pin);
+          let validationResult = validateObject(res.body, models.pin);
+          expect(validationResult.isValid).to.equal(true);
           expect(res.body.title).to.equal(updatedTitle);
           return done();
         });
@@ -362,16 +394,10 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
-          return done();
-        });
-    });
-
-    it('Should delete a pin', function(done) {
-      api
-        .del(`pins/${newPinId}`)
-        .expect(HttpStatusCodes.NO_CONTENT)
-        .end(function(err, res) {
-          if (err) return done(err);
+          res.body.forEach(pin => {
+            let validationResult = validateObject(pin, models.pin);
+            expect(validationResult.isValid).to.equal(true);
+          });
           return done();
         });
     });
@@ -393,7 +419,10 @@ describe('REST API', function() {
         .end(function(err, res) {
           if (err) return done(err);
           expect(res.body).instanceof(Array);
-          res.body.forEach(visit => expect(visit).to.have.all.keys(models.visitation));
+          res.body.forEach(visit => {
+            let validationResult = validateObject(visit, models.visitation);
+            expect(validationResult.isValid).to.equal(true);
+          });
           return done();
         });
     });
@@ -438,7 +467,7 @@ describe('REST API', function() {
         });
     });
 
-        it('Should star a pin', function(done) {
+    it('Should star a pin', function(done) {
       api
         .put(`users/${newUserId}/stars/${newPinId}`)
         .expect(HttpStatusCodes.NO_CONTENT)
@@ -469,8 +498,16 @@ describe('REST API', function() {
     });
 
     after(function() {
-      QueryUtility.query(`DELETE FROM tags WHERE tagId = '${newTagId}'`);
-      QueryUtility.query(`DELETE FROM stars WHERE userId = ${newUserId} AND pinId = ${newPinId}`);
+      Promise.all([
+        QueryUtility.query(`DELETE FROM tags WHERE tagId = '${newTagId}'`),
+        QueryUtility.query(`DELETE FROM flags WHERE userId = ${newUserId} and pinId = ${newPinId}`),
+        QueryUtility.query(`DELETE FROM stars WHERE userId = ${newUserId} AND pinId = ${newPinId}`),
+        QueryUtility.query(`DELETE FROM visitations WHERE userId = ${newUserId} AND pinId = ${newPinId}`)
+      ]).then(function() {
+        QueryUtility.query(`DELETE FROM pins WHERE pinId = ${newPinId}`);
+      }).then(function() {
+        QueryUtility.query(`DELETE FROM users WHERE userId = ${newUserId}`);
+      });
     });
   });
 
@@ -486,8 +523,9 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
           if (err) return done(err);
+          let validationResult = validateObject(res.body, models.tag);
+          expect(validationResult.isValid).to.equal(true);
           newTagId = res.body.tagId;
-          expect(res.body).to.have.all.keys(models.tag);
           return done();
         });
     });
@@ -498,7 +536,8 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
-          expect(res.body).to.have.all.keys(models.tag);
+          let validationResult = validateObject(res.body, models.tag);
+          expect(validationResult.isValid).to.equal(true);
           return done();
         });
     });
@@ -522,6 +561,8 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
           if (err) return done(err);
+          let validationResult = validateObject(res.body, models.user);
+          expect(validationResult.isValid).to.equal(true);
           newUserId = res.body.userId;
           api
             .post('pins')
@@ -536,6 +577,8 @@ describe('REST API', function() {
             .expect(HttpStatusCodes.CREATED)
             .end(function(err, res) {
               if (err) return done(err);
+              let validationResult = validateObject(res.body, models.pin);
+              expect(validationResult.isValid).to.equal(true);
               newPinId = res.body.pinId;
               return done();
             });
@@ -553,8 +596,9 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
           if (err) return done(err);
+          let validationResult = validateObject(res.body, models.description);
+          expect(validationResult.isValid).to.equal(true);
           newDescriptionId = res.body.descriptionId;
-          expect(res.body).to.have.all.keys(models.description);
           return done();
         });
     });
@@ -565,7 +609,8 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
-          expect(res.body).to.have.all.keys(models.description);
+          let validationResult = validateObject(res.body, models.description);
+          expect(validationResult.isValid).to.equal(true);
           return done();
         });
     });
@@ -584,7 +629,8 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
-          expect(res.body).to.have.all.keys(models.description);
+          let validationResult = validateObject(res.body, models.description);
+          expect(validationResult.isValid).to.equal(true);
           expect(res.body.text).to.equal(newText);
           return done();
         });
@@ -612,7 +658,10 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
-          res.body.forEach(pinType => expect (pinType).to.have.all.keys(models.pinType));
+          res.body.forEach(pinType => {
+            let validationResult = validateObject(pinType, models.pinType);
+            expect(validationResult.isValid).to.equal(true);
+          });
           return done();
         });
     })

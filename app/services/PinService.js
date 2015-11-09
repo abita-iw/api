@@ -2,8 +2,10 @@ import QueryUtility from '../utilities/QueryUtility';
 import DateUtility from '../utilities/DateUtility';
 import PinUtility from '../utilities/PinUtility';
 import { metersPerDegree, defaultPinLimit } from '../constants/ServerConstants';
-
-let query = QueryUtility.query;
+import { query, error } from '../utilities/QueryUtility';
+import models from '../models/index';
+import { int } from '../models/types';
+import { validateObject, executePropValidator } from '../utilities/ValidationUtility';
 
 let PinService = {
   // query pins within a given spherical rectange centered at (latitude,

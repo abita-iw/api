@@ -1,10 +1,11 @@
 import ImageMagick from 'imagemagick';
-import QueryUtility from '../utilities/QueryUtility';
 import DateUtility from '../utilities/DateUtility';
 import { Promise } from 'es6-promise';
 import { imageSizes } from '../constants/AppConstants';
-
-let query = QueryUtility.query;
+import models from '../models/index';
+import { int } from '../models/types';
+import { validateObject, executePropValidator } from '../utilities/ValidationUtility';
+import { query, error } from '../utilities/QueryUtility';
 
 let ImageService = {
   getImages: function () {
@@ -12,6 +13,9 @@ let ImageService = {
   },
 
   getImage: function(imageId) {
+    let validationResult = executePropValidator(imageId, 'imageId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+
     let sql = `
 SELECT
     imageId,
@@ -28,6 +32,9 @@ WHERE
   },
 
   getPinImages: function(pinId) {
+    let validationResult = executePropValidator(pinId, 'pinId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+
     let sql = `
 SELECT
     imageId,
@@ -44,6 +51,9 @@ WHERE
   },
 
   createImage: function(image) {
+    let validationResult = validateObject(image, models.image);
+    if (!validationResult.isValid) return error(validationResult.errors);
+
     let now = DateUtility.getNow();
     let sql = `
 INSERT INTO
@@ -55,6 +65,9 @@ VALUES
   },
 
   resizeImage: function(imagePath, imageId) {
+    let validationResult = executePropValidator(imageId, 'imageId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+
     let options = imageSizes.map(function(is) {
       return {
         width: is.width,
@@ -74,6 +87,9 @@ VALUES
   },
 
   deleteImage: function(imageId) {
+    let validationResult = executePropValidator(imageId, 'imageId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+
     let sql = `
 UPDATE
     images

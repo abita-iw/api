@@ -1,7 +1,8 @@
-import QueryUtility from '../utilities/QueryUtility';
 import DateUtility from '../utilities/DateUtility';
-
-let query = QueryUtility.query;
+import { query, error } from '../utilities/QueryUtility';
+import models from '../models/index';
+import { int } from '../models/types';
+import { validateObject, executePropValidator } from '../utilities/ValidationUtility';
 
 let StarService = {
   getStars: function () {
@@ -19,6 +20,9 @@ WHERE
   },
 
   getPinStars: function(pinId) {
+    let validationResult = executePropValidator(pinId, 'pinId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+    
     let sql = `
 SELECT
     userId,
@@ -34,6 +38,9 @@ WHERE
   },
 
   getUserStars: function(userId) {
+    let validationResult = executePropValidator(userId, 'userId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+
     let sql = `
 SELECT
     userId,
@@ -49,6 +56,11 @@ WHERE
   },
 
   createStar: function(userId, pinId) {
+    let userValidationResult = executePropValidator(userId, 'userId', int);
+    if (!userValidationResult.isValid) return error(userValidationResult.error);
+    let pinValidationResult = executePropValidator(pinId, 'pinId', int);
+    if (!pinValidationResult.isValid) return error(pinValidationResult.error);
+    
     let now = DateUtility.getNow();
     let sql = `
 INSERT INTO
@@ -60,6 +72,11 @@ VALUES
   },
 
   deleteStar: function(userId, pinId) {
+    let userValidationResult = executePropValidator(userId, 'userId', int);
+    if (!userValidationResult.isValid) return error(userValidationResult.error);
+    let pinValidationResult = executePropValidator(pinId, 'pinId', int);
+    if (!pinValidationResult.isValid) return error(pinValidationResult.error);
+
     let sql = `
 UPDATE
     stars
