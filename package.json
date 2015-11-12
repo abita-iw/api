@@ -1,7 +1,7 @@
 {
-  "name": "iw_api",
+  "name": "abita_api",
   "version": "0.1.0",
-  "description": "A starter kit for developing applications with react, flux, and react-router.",
+  "description": "API supporting the Abita Android application.",
   "dependencies": {
     "babel": "^5.8.23",
     "bcrypt": "^0.8.5",
