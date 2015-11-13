@@ -3,13 +3,12 @@ import { Promsise } from 'es6-promise';
 import ServerConstants from '../constants/ServerConstants';
 import fs from 'fs';
 
-var privateKey = fs.readFileSync('./keys/serverkey.pem');
-var publicKey = fs.readFileSync('./keys/serverkey.pub');
+var privateKey = fs.readFileSync('./keys/server.key');
 
 var JWTService = {
   createToken: function(payload) {
     return jwt.sign(payload, privateKey, {
-      expiresInMinutes: ServerConstants.jwt.defaultTokenLifetimeMins,
+      expiresIn: ServerConstants.jwt.defaultTokenLifetimeSecs,
       algorithm: ServerConstants.jwt.algorithm
     });
   },

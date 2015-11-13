@@ -1,6 +1,6 @@
 export default {
   jwt: {
-    defaultTokenLifetimeMins: 60 * 8,
+    defaultTokenLifetimeSecs: 60 * 8 * 60,
     algorithm: 'HS256'
   },
   saltSize: 10,
