@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import QueryUtility from '../utilities/QueryUtility';
 import DateUtility from '../utilities/DateUtility';
 import PinUtility from '../utilities/PinUtility';
@@ -49,6 +51,9 @@ WHERE
   },
 
   getPin: function(pinId) {
+    let validationResult = executePropValidator(pinId, 'pinId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+    
     let sql = `
 SELECT
     pinId,
@@ -71,6 +76,9 @@ WHERE
   },
 
   createPin: function(pin) {
+    let validationResult = validateObject(pin, models.pin);
+    if (!validationResult.isValid) return error(validationResult.errors);
+
     let now = DateUtility.getNow();
     let sql = `
 INSERT INTO
@@ -90,6 +98,9 @@ VALUES
   },
 
   updatePin: function(pin) {
+    let validationResult = validateObject(pin, models.pin);
+    if (!validationResult.isValid) return error(validationResult.errors);
+
     let now = DateUtility.getNow();
     let sql = `
 UPDATE
@@ -107,6 +118,9 @@ WHERE
   },
 
   deletePin: function(pinId) {
+    let validationResult = executePropValidator(pinId, 'pinId', int);
+    if (!validationResult.isValid) return error(validationResult.error);
+
     let sql = `
 UPDATE
     pins

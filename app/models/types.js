@@ -5,6 +5,7 @@ export const OPTIONAL ='OPTIONAL';
 export const ALPHA ='ALPHA';
 export const EMAIL ='EMAIL';
 export const NUMERIC ='NUMERIC';
+export const FLOAT ='FLOAT';
 export const LENGTH = 'LENGTH';
 export const NOTNULL = 'NOTNULL';
 
@@ -31,6 +32,9 @@ export const numeric = {
 }
 export const notnull = {
   name: NOTNULL
+}
+export const float = {
+  name: FLOAT 
 }
 export function length(min, max) {
   return {

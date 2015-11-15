@@ -7,7 +7,8 @@ import {
   email,
   numeric,
   length,
-  date
+  date,
+  float
 } from '../models/types';
 
 export default {
@@ -186,15 +187,15 @@ export default {
     },
     {
       name: 'pinType',
-      validators: [required, notnull]
+      validators: [notnull]
     },
     {
       name: 'latitude',
-      validators: [numeric, required, notnull]
+      validators: [float, required, notnull]
     },
     {
       name: 'longitude',
-      validators: [numeric, required, notnull]
+      validators: [float, required, notnull]
     },
     {
       name: 'dateCreated',

@@ -13,7 +13,7 @@ let ApiApp = ControllerUtility.makeController();
 ApiApp.use('/images', ImageController);
 ApiApp.use('/imageSizes', ImageSizeController);
 
-ApiApp.all('/users', ControllerUtility.authenticateRequest);
+// ApiApp.all('/users', ControllerUtility.authenticateRequest);
 ApiApp.use('/users', UserController);
 ApiApp.use('/pins', PinController);
 ApiApp.use('/pinTypes', PinTypeController);

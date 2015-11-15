@@ -1,4 +1,4 @@
-import { isNumeric, isInt, isAlpha, isEmail, isLength, isDate } from 'validator';
+import { isNumeric, isInt, isAlpha, isEmail, isLength, isDate, isFloat } from 'validator';
 import _ from 'lodash';
 
 import {
@@ -10,7 +10,8 @@ import {
   NUMERIC,
   LENGTH,
   DATE,
-  NOTNULL
+  NOTNULL,
+  FLOAT
 } from '../models/types';
 
 export function makeValidationError(val, propName, validator) {
@@ -25,6 +26,8 @@ export function makeValidationError(val, propName, validator) {
       return `${propName} must be a valid email, but got '${val}'.`;
     case NUMERIC:
       return `${propName} must be numeric, but got '${val}'.`;
+    case FLOAT:
+      return `${propName} must be a float, but got '${val}'.`;
     case LENGTH:
       return `${propName} must have length between ${validator.options[0]} and ${validator.options[1]}.`;
     case NOTNULL:
@@ -57,6 +60,9 @@ export function executePropValidator(val, propName, validator) {
       break;
     case NUMERIC:
       isValid = isNumeric(val) || _.isUndefined(val);
+      break;
+    case FLOAT:
+      isValid = isFloat(val) || _.isUndefined(val);
       break;
     case LENGTH:
       isValid = isLength(val, validator.options[0], validator.options[1]) || _.isUndefined(val);
