@@ -18,6 +18,7 @@ class SidebarMenu extends React.Component {
           <li>
             <a href="#api">API Description</a>
             <ul className="nav nav-stacked">
+              <li><a href="#api-auth">Authentication</a></li>
               <li><a href="#api-users">Users</a></li>
               <li><a href="#api-pins">Pins</a></li>
               <li><a href="#api-descriptions">Descriptions</a></li>

@@ -227,6 +227,49 @@ class DocPage extends React.Component {
 
           <h2 id="api">API Description</h2>
 
+          <h3 id="api-auth">Auth</h3>
+          <p><code>POST /auth/tokensignin</code></p>
+          <pre className="docs-example">{`curl -X POST ${apiUri}/users
+{
+  "token_type":"Bearer",
+  "access_token":[access_token],
+  "scope":[scope],
+  "login_hint":[login_hint],
+  "expires_in":[expires_in],
+  "id_token":[id_token]
+}
+ `}</pre>
+          <pre className="prettyprint"><code className="javascript">{`200 OK
+{
+  "jwt": [jwt]
+  "data": {
+    "iss": "accounts.google.com",
+    "at_hash": [at_hash]
+    "aud": [aud]
+    "sub": [sub]
+    "email_verified": "true",
+    "azp": [azp]
+    "email": [email]
+    "iat": "1447426829",
+    "exp": 1447455870,
+    "name": [name]
+    "given_name": [given_name]
+    "family_name": [family_name]
+    "locale": "en",
+    "alg": "RS256",
+    "kid": [kid]
+  },
+  "user": {
+    "userId": 47,
+    "email": "test@example.com",
+    "dateCreated": "2015-10-21T03:55:06.000Z",
+    "dateModified": "2015-10-21T03:55:06.000Z"
+  }
+}
+`}</code></pre>
+
+
+
           <h3 id="api-users">Users</h3>
 
           <h4>Create a user</h4>

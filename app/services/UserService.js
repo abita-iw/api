@@ -2,7 +2,7 @@ import DateUtility from '../utilities/DateUtility';
 import { query, error } from '../utilities/QueryUtility';
 import { validateObject, executePropValidator } from '../utilities/ValidationUtility';
 import models from '../models/index';
-import { int } from '../models/types';
+import { int, email } from '../models/types';
 
 let UserService = {
   getUsers: function () {
@@ -16,6 +16,24 @@ FROM
     users
 WHERE
     isDeleted = false
+`;
+    return query(sql);
+  },
+
+  getUserByEmail: function(email) {
+    let validationResult = executePropValidator(email, 'email', email);
+    if (!validationResult.isValid) return error(validationResult.error);
+
+    let sql = `
+SELECT
+    userId,
+    email,
+    dateCreated,
+    dateModified
+FROM
+    users
+WHERE
+    email = ?
 `;
     return query(sql);
   },
