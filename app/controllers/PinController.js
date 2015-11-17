@@ -10,6 +10,8 @@ import { sendError, handleSingle } from '../utilities/QueryUtility';
 
 let PinController = ControllerUtility.makeController();
 
+PinController.all('/:pinId/*/:userId', ControllerUtility.authenticateRequest); 
+
 PinController.get('/', function(req, res) {
   PinService.getPins(req.query.latitude, req.query.longitude, req.query.radius)
     .then(rows => res.send(rows))
@@ -58,12 +60,14 @@ PinController.delete('/:pinId', function(req, res) {
     .catch(err => sendError(res, err));
 });
 
+PinController.put('/:pinId/flags/:userId', ControllerUtility.authorizeUser); 
 PinController.put('/:pinId/flags/:userId', function(req, res) {
   FlagService.createFlag(req.params.userId, req.params.pinId)
     .then(() => res.sendStatus(HttpStatusCodes.NO_CONTENT))
     .catch(err => sendError(res, err));
 });
 
+PinController.delete('/:pinId/flags/:userId', ControllerUtility.authorizeUser); 
 PinController.delete('/:pinId/flags/:userId', function(req, res) {
   FlagService.deleteFlag(req.params.userId, req.params.pinId)
     .then(() => res.sendStatus(HttpStatusCodes.NO_CONTENT))
@@ -88,6 +92,7 @@ PinController.delete('/:pinId/tags/:tagId', function(req, res) {
     .catch(err => sendError(res, err));
 });
 
+PinController.put('/:pinId/visits/:userId', ControllerUtility.authorizeUser); 
 PinController.put('/:pinId/visits/:userId', function(req, res) {
   VisitationService.createVisitation(req.params.userId, req.params.pinId).then(function() {
     res.sendStatus(HttpStatusCodes.NO_CONTENT);

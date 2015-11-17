@@ -14,12 +14,15 @@ UserController.post('/', function(req, res) {
   }).catch(err => sendError(res, err));
 });
 
+UserController.all('*', ControllerUtility.authenticateRequest);
+UserController.all('/:userId/*', ControllerUtility.authorizeUser);
 UserController.get('/', function(req, res) {
   UserService.getUsers()
     .then(rows => res.send(rows))
     .catch(err => sendError(res, err));
 });
 
+UserController.all('/:userId', ControllerUtility.authorizeUser);
 UserController.get('/:userId', function(req, res) {
   UserService.getUser(req.params.userId)
     .then(rows => handleSingle(res, rows, HttpStatusCodes.OK, HttpStatusCodes.NOT_FOUND))

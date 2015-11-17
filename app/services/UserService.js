@@ -20,8 +20,8 @@ WHERE
     return query(sql);
   },
 
-  getUserByEmail: function(email) {
-    let validationResult = executePropValidator(email, 'email', email);
+  getUserByEmail: function(userEmail) {
+    let validationResult = executePropValidator(userEmail, 'email', email);
     if (!validationResult.isValid) return error(validationResult.error);
 
     let sql = `
@@ -35,7 +35,7 @@ FROM
 WHERE
     email = ?
 `;
-    return query(sql);
+    return query(sql, [userEmail]);
   },
 
   getUser: function(userId) {

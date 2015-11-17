@@ -9,7 +9,6 @@ let QueryUtility = {
         connection.query(mysql.format(sql, inserts), function (err, rows) {
           connection.release();
           if (err) {
-            console.log(err);
             reject(err);
           }
           resolve(rows);
@@ -36,8 +35,7 @@ let QueryUtility = {
 
   handleSingle: function(res, rows, successCode = HttpStatusCodes.OK, errorCode = HttpStatusCodes.SERVER_ERROR) {
     if (rows.length != 1) {
-      QueryUtility.error({ code: errorCode });
-      return;
+      QueryUtility.sendError(res, QueryUtility.error('', errorCode));
     }
     else res.status(successCode).send(rows[0]);
   }

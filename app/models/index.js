@@ -190,6 +190,10 @@ export default {
       validators: [notnull]
     },
     {
+      name: 'typeId',
+      validators: [notnull]
+    },
+    {
       name: 'latitude',
       validators: [float, required, notnull]
     },

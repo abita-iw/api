@@ -4,10 +4,14 @@ import { Promise } from 'es6-promise';
 import _ from 'lodash';
 import express from 'express';
 import QueryUtility from '../app/utilities/QueryUtility';
+import TestUtility from '../app/utilities/TestUtility';
 import ApiApp from '../app/ApiApp';
 import models from '../app/models/index';
 import { validateObject } from '../app/utilities/ValidationUtility';
 import HttpStatusCodes from '../app/constants/HttpStatusCodes';
+import PinService from '../app/services/PinService';
+import UserService from '../app/services/UserService';
+import JWTService from '../app/services/JWTService';
 
 let API_PORT = 4001;
 
@@ -15,6 +19,7 @@ describe('REST API', function() {
   let api = supertest(`localhost:${API_PORT}/`);
   let testEmail = 'test@example.com';
   let testTitle = 'TEST_TITLE';
+  let jwt = TestUtility.getTestJWT(testEmail);
 
   before(function(done) {
     let app = express();
@@ -49,37 +54,27 @@ describe('REST API', function() {
     let newPinId = null;
     let newImageId = null;
     before (function(done) {
-      api
-        .post('users')
-        .send({
-          email: testEmail
-        })
-        .expect(HttpStatusCodes.CREATED)
-        .end(function(err, res) {
-          if (err) return done(err);
-          newUserId = res.body.userId;
-          api
-            .post('pins')
-            .send({
-              userId: newUserId,
-              typeId: 1,
-              latitude: 0,
-              longitude: 0,
-              description: 'Test',
-              title: testTitle
-            })
-            .expect(HttpStatusCodes.CREATED)
-            .end(function(err, res) {
-              if (err) return done(err);
-              newPinId = res.body.pinId;
-              return done();
-            });
+      UserService.createUser({
+        email: testEmail
+      }).then(res => {
+        newUserId = res.insertId;
+        PinService.createPin({
+          userId: newUserId,
+          typeId: 1,
+          latitude: 0,
+          longitude: 0,
+          title: testTitle
+        }).then(res => {
+          newPinId = res.insertId;
+          return done();
         });
+      }).catch(err => done(err));
     });
 
     it('Should retrieve a list of all images', function(done) {
       api
         .get('images')
+        .set('X-JWT', jwt)
         .expect('Content-Type', /json/)
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
@@ -129,10 +124,46 @@ describe('REST API', function() {
   describe('Users', function() {
     let newUserId = null;
     let newPinId = null;
+    let testUserId = null;
+    let jwt = null;
+
+    before (function(done) {
+      api
+        .post('users')
+        .send({
+          email: testEmail
+        })
+        .expect(HttpStatusCodes.CREATED)
+        .end(function(err, res) {
+          if (err) return done(err);
+          let validationResult = validateObject(res.body, models.user);
+          expect(validationResult.isValid).to.equal(true);
+          newUserId = res.body.userId;
+          jwt = JWTService.createToken(res.body);
+          api
+            .post('pins')
+            .send({
+              userId: newUserId,
+              typeId: 1,
+              latitude: 0,
+              longitude: 0,
+              title: testTitle
+            })
+            .expect(HttpStatusCodes.CREATED)
+            .end(function(err, res) {
+              if (err) return done(err);
+              let validationResult = validateObject(res.body, models.pin);
+              expect(validationResult.isValid).to.equal(true);
+              newPinId = res.body.pinId;
+              return done();
+            });
+        });
+    });
 
     it('Should fail to create a new user with an invalid email', function(done) {
        api
         .post('users')
+        .set('X-JWT', jwt)
         .send({
           email: 'test'
         })
@@ -152,33 +183,17 @@ describe('REST API', function() {
         .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
           if (err) return done(err);
-          newUserId = res.body.userId;
+          testUserId = res.body.userId;
           let validationResult = validateObject(res.body, models.user);
           expect(validationResult.isValid).to.equal(true);
-          api
-            .post('pins')
-            .send({
-              userId: newUserId,
-              typeId: 1,
-              latitude: 0,
-              longitude: 0,
-              description: 'Test',
-              title: testTitle
-            })
-            .expect(HttpStatusCodes.CREATED)
-            .end(function(err, res) {
-              if (err) return done(err);
-              newPinId = res.body.pinId;
-              let validationResult = validateObject(res.body, models.pin);
-              expect(validationResult.isValid).to.equal(true);
-              return done();
-            });
+          return done();
         });
     });
 
     it('Should retrieve a single user', function(done) {
       api
         .get(`users/${newUserId}`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
@@ -191,6 +206,7 @@ describe('REST API', function() {
     it('Should retrieve a list of all users', function(done) {
       api
         .get('users')
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
@@ -206,6 +222,7 @@ describe('REST API', function() {
     it('Should create a user star', function(done) {
       api
         .put(`users/${newUserId}/stars/${newPinId}`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
@@ -216,6 +233,7 @@ describe('REST API', function() {
     it('Should retrieve a list of user stars', function(done) {
       api
         .get(`users/${newUserId}/stars`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
@@ -228,9 +246,10 @@ describe('REST API', function() {
         });
     });
 
-        it('Should visit a pin', function(done) {
+    it('Should visit a pin', function(done) {
       api
         .put(`users/${newUserId}/visits/${newPinId}`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err) {
           if (err) return done(err);
@@ -241,6 +260,7 @@ describe('REST API', function() {
     it("Should get a user's visited pins", function(done) {
       api
         .get(`users/${newUserId}/visits`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
@@ -256,6 +276,7 @@ describe('REST API', function() {
     it("Should get a user's descriptions", function(done) {
       api
         .get(`users/${newUserId}/descriptions`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.OK)
         .end(function(err, res) {
           if (err) return done(err);
@@ -271,6 +292,7 @@ describe('REST API', function() {
     it('Should delete a user', function(done) {
       api
         .del(`users/${newUserId}`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err) {
           if (err) return done(err);
@@ -279,6 +301,7 @@ describe('REST API', function() {
     });
 
     after(function() {
+      QueryUtility.query(`DELETE FROM users WHERE userId = '${testUserId}'`);
       Promise.all([
         QueryUtility.query(`DELETE FROM stars WHERE pinId = '${newPinId}' AND userId = '${newUserId}'`),
         QueryUtility.query(`DELETE FROM visitations WHERE pinId = '${newPinId}' AND userId = '${newUserId}'`)
@@ -292,8 +315,10 @@ describe('REST API', function() {
 
   describe('Pins', function() {
     let newPinId = null;
+    let testPinId = null;
     let newUserId = null;
     let newTagId = null;
+    let jwt = null;
     let updatedTitle = 'UPDATED_TITLE';
     let testTag = 'TEST TAG';
     before(function(done) {
@@ -310,6 +335,7 @@ describe('REST API', function() {
              let validationResult = validateObject(res.body, models.user);
              expect(validationResult.isValid).to.equal(true);
              newUserId = res.body.userId;
+             jwt = JWTService.createToken(res.body);
              resolve();
            });
         }),
@@ -329,7 +355,23 @@ describe('REST API', function() {
            });
         })
       ]).then(function() {
-        return done()
+        api
+          .post('pins')
+          .send({
+            userId: newUserId,
+            typeId: 1,
+            latitude: 0,
+            longitude: 0,
+            title: testTitle
+          })
+          .expect(HttpStatusCodes.CREATED)
+          .end(function(err, res) {
+            if (err) return done(err);
+            let validationResult = validateObject(res.body, models.pin);
+            expect(validationResult.isValid).to.equal(true);
+            newPinId = res.body.pinId;
+            return done();
+          });
       }).catch(function(err) {
         return done(err);
       });
@@ -350,7 +392,7 @@ describe('REST API', function() {
           if (err) return done(err);
           let validationResult = validateObject(res.body, models.pin);
           expect(validationResult.isValid).to.equal(true);
-          newPinId = res.body.pinId;
+          testPinId = res.body.pinId;
           return done();
         });
     });
@@ -405,6 +447,7 @@ describe('REST API', function() {
     it('Should log a pin visit', function(done) {
       api
         .put(`pins/${newPinId}/visits/${newUserId}`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
@@ -430,6 +473,7 @@ describe('REST API', function() {
     it('Should flag a pin', function(done) {
       api
         .put(`pins/${newPinId}/flags/${newUserId}`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
@@ -440,6 +484,7 @@ describe('REST API', function() {
     it('Should un-flag a pin', function(done) {
       api
         .del(`pins/${newPinId}/flags/${newUserId}`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
@@ -450,6 +495,7 @@ describe('REST API', function() {
     it('Should tag a pin', function(done) {
       api
         .put(`pins/${newPinId}/tags/${newTagId}`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
@@ -460,6 +506,7 @@ describe('REST API', function() {
     it('Should un-tag a pin', function(done) {
       api
         .del(`pins/${newPinId}/tags/${newTagId}`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
@@ -470,6 +517,7 @@ describe('REST API', function() {
     it('Should star a pin', function(done) {
       api
         .put(`users/${newUserId}/stars/${newPinId}`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
@@ -480,6 +528,7 @@ describe('REST API', function() {
     it('Should unstar a pin', function(done) {
       api
         .del(`users/${newUserId}/stars/${newPinId}`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
@@ -489,7 +538,8 @@ describe('REST API', function() {
 
     it('Should delete a pin', function(done) {
       api
-        .del(`pins/${newPinId}`)
+        .del(`pins/${testPinId}`)
+        .set('X-JWT', jwt)
         .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
@@ -498,6 +548,7 @@ describe('REST API', function() {
     });
 
     after(function() {
+      QueryUtility.query(`DELETE FROM pins WHERE pinId = ${testPinId}`);
       Promise.all([
         QueryUtility.query(`DELETE FROM tags WHERE tagId = '${newTagId}'`),
         QueryUtility.query(`DELETE FROM flags WHERE userId = ${newUserId} and pinId = ${newPinId}`),
@@ -552,6 +603,7 @@ describe('REST API', function() {
     let newUserId = null;
     let newPinId = null;
     let newDescriptionId = null;
+    let testDescriptionId = null;
     before (function(done) {
       api
         .post('users')
@@ -580,7 +632,21 @@ describe('REST API', function() {
               let validationResult = validateObject(res.body, models.pin);
               expect(validationResult.isValid).to.equal(true);
               newPinId = res.body.pinId;
-              return done();
+              api
+                .post('descriptions')
+                .send({
+                  userId: newUserId,
+                  pinId: newPinId,
+                  text: descriptionText
+                })
+                .expect(HttpStatusCodes.CREATED)
+                .end(function(err, res) {
+                  if (err) return done(err);
+                  let validationResult = validateObject(res.body, models.description);
+                  expect(validationResult.isValid).to.equal(true);
+                  newDescriptionId = res.body.descriptionId;
+                  return done();
+                })
             });
         });
     });
@@ -598,7 +664,7 @@ describe('REST API', function() {
           if (err) return done(err);
           let validationResult = validateObject(res.body, models.description);
           expect(validationResult.isValid).to.equal(true);
-          newDescriptionId = res.body.descriptionId;
+          testDescriptionId = res.body.descriptionId;
           return done();
         });
     });
@@ -638,7 +704,7 @@ describe('REST API', function() {
 
     it('Should delete a description', function(done) {
       api
-        .del(`descriptions/${newDescriptionId}`)
+        .del(`descriptions/${testDescriptionId}`)
         .expect(HttpStatusCodes.NO_CONTENT)
         .end(function(err, res) {
           if (err) return done(err);
@@ -647,7 +713,14 @@ describe('REST API', function() {
     });
 
     after(function() {
-      QueryUtility.query(`DELETE FROM descriptions WHERE descriptionId = '${newDescriptionId}'`);
+      Promise.all([
+        QueryUtility.query(`DELETE FROM descriptions WHERE descriptionId = '${newDescriptionId}'`),
+        QueryUtility.query(`DELETE FROM descriptions WHERE descriptionId = '${testDescriptionId}'`)
+      ]).then(function() {
+        QueryUtility.query(`DELETE FROM pins WHERE pinId = ${newPinId}`);
+      }).then(function() {
+        QueryUtility.query(`DELETE FROM users WHERE userId = ${newUserId}`);
+      });
     });
   });
 
@@ -674,3 +747,4 @@ describe('REST API', function() {
   });
 
 });
+
