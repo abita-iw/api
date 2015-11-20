@@ -6,6 +6,9 @@ class SidebarMenu extends React.Component {
       <nav className="col-xs-2 bs-docs-sidebar">
         <ul id="sidebar" className="nav nav-stacked fixed">
           <li>
+            <a href="#authentication">Authentication</a>
+          </li>
+          <li>
             <a href="#datatypes">Data Types</a>
             <ul className="nav nav-stacked">
               <li><a href="#data-users">Users</a></li>

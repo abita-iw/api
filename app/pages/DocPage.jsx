@@ -20,6 +20,14 @@ class DocPage extends React.Component {
         </div>
         <div data-spy="scroll" id="documentation" className="col-lg-5 col-md-7 col-sm-9">
           <h1>Abita API Documentation</h1>
+          <section id="authentication">
+            <h2>Authentication</h2>
+            Routes that require userId fields are protected using JSON web tokens (JWTs). To be accessed,
+            requests must provide a valid JWT in a custom 'X-JWT' header. API client JWTs can be obtained
+            from the <code>/api/auth/tokensignin</code> route, which validates a Google Sign-in token and
+            returns a JWT, the Google account data, and the local user data. For more information on this
+            route, see the API <a href="#api-auth">Auth</a> section.
+          </section>
           <section id="datatypes">
             <h2>Data Types</h2>
             <div id="data-users">

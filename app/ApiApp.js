@@ -7,6 +7,7 @@ import PinTypeController from './controllers/PinTypeController';
 import TagController from './controllers/TagController';
 import DescriptionController from './controllers/DescriptionController';
 import AuthController from './controllers/AuthController';
+import PlaceController from './controllers/PlaceController';
 
 let ApiApp = ControllerUtility.makeController();
 
@@ -18,5 +19,6 @@ ApiApp.use('/pinTypes', PinTypeController);
 ApiApp.use('/tags', TagController);
 ApiApp.use('/descriptions', DescriptionController);
 ApiApp.use('/auth', AuthController);
+ApiApp.use('/places', PlaceController);
 
 export default ApiApp;
