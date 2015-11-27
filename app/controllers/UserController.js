@@ -10,7 +10,8 @@ let UserController = ControllerUtility.makeController();
 
 UserController.post('/', function(req, res) {
   UserService.createUser(req.body).then(function(result) {
-    UserService.getUser(result.insertId).then(rows => handleSingle(res, rows, HttpStatusCodes.CREATED));
+    UserService.getUser(result.insertId)
+      .then(rows => handleSingle(res, rows, HttpStatusCodes.CREATED));
   }).catch(err => sendError(res, err));
 });
 

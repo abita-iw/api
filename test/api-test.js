@@ -318,9 +318,11 @@ describe('REST API', function() {
     let testPinId = null;
     let newUserId = null;
     let newTagId = null;
+    let newLinkId = null;
     let jwt = null;
     let updatedTitle = 'UPDATED_TITLE';
     let testTag = 'TEST TAG';
+    let testLink = 'TEST_LINK';
     before(function(done) {
       Promise.all([
         new Promise(function(resolve, reject) {
@@ -470,6 +472,40 @@ describe('REST API', function() {
         });
     });
 
+    it('Should add a link to a pin', function(done) {
+      api
+        .post(`pins/${newPinId}/links`)
+        .send({
+          userId: newUserId,
+          pinId: newPinId,
+          link: testLink
+        })
+        .set('X-JWT', jwt)
+        .expect(HttpStatusCodes.CREATED)
+        .end(function(err, res) {
+          if (err) return done(err);
+          newLinkId = res.body.linkId;
+          let validationResult = validateObject(res.body, models.link);
+          expect(validationResult.isValid).to.equal(true);
+          return done();
+        });
+    });
+
+    it("Should get a pin's links", function(done) {
+      api
+        .get(`pins/${newPinId}/links`)
+        .expect(HttpStatusCodes.OK)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).instanceof(Array);
+          res.body.forEach(link => {
+            let validationResult = validateObject(link, models.link);
+            expect(validationResult.isValid).to.equal(true);
+          });
+          return done();
+        });
+    });
+
     it('Should flag a pin', function(done) {
       api
         .put(`pins/${newPinId}/flags/${newUserId}`)
@@ -550,6 +586,7 @@ describe('REST API', function() {
     after(function() {
       QueryUtility.query(`DELETE FROM pins WHERE pinId = ${testPinId}`);
       Promise.all([
+        QueryUtility.query(`DELETE FROM links WHERE pinId = '${newPinId}'`),
         QueryUtility.query(`DELETE FROM tags WHERE tagId = '${newTagId}'`),
         QueryUtility.query(`DELETE FROM flags WHERE userId = ${newUserId} and pinId = ${newPinId}`),
         QueryUtility.query(`DELETE FROM stars WHERE userId = ${newUserId} AND pinId = ${newPinId}`),
@@ -595,6 +632,109 @@ describe('REST API', function() {
 
     after(function() {
       QueryUtility.query(`DELETE FROM tags WHERE name = '${testTag}'`);
+    });
+  });
+
+  describe('Links', function() {
+    let testLink = 'TEST_LINK_INSTANCE';
+    let testLinkId = null;
+    let newLinkId = null;
+    let newUserId = null;
+    let newPinId = null;
+
+    before (function(done) {
+      api
+        .post('users')
+        .send({
+          email: testEmail
+        })
+        .expect(HttpStatusCodes.CREATED)
+        .end(function(err, res) {
+          if (err) return done(err);
+          let validationResult = validateObject(res.body, models.user);
+          expect(validationResult.isValid).to.equal(true);
+          newUserId = res.body.userId;
+          api
+            .post('pins')
+            .send({
+              userId: newUserId,
+              typeId: 1,
+              latitude: 0,
+              longitude: 0,
+              description: 'Test',
+              title: testTitle
+            })
+            .expect(HttpStatusCodes.CREATED)
+            .end(function(err, res) {
+              if (err) return done(err);
+              let validationResult = validateObject(res.body, models.pin);
+              expect(validationResult.isValid).to.equal(true);
+              newPinId = res.body.pinId;
+              api
+                .post('links')
+                .send({
+                  userId: newUserId,
+                  pinId: newPinId,
+                  link: testLink
+                })
+                .expect(HttpStatusCodes.CREATED)
+                .end(function(err, res) {
+                  if (err) return done(err);
+                  let validationResult = validateObject(res.body, models.link);
+                  expect(validationResult.isValid).to.equal(true);
+                  newLinkId = res.body.linkId;
+                  return done();
+                })
+            });
+        });
+    });
+
+    it('Should create a new link', function(done) {
+      api
+        .post('links')
+        .send({
+          userId: newUserId,
+          pinId: newPinId,
+          link: testLink
+        })
+        .expect(HttpStatusCodes.CREATED)
+        .end(function(err, res) {
+          if (err) return done(err);
+          let validationResult = validateObject(res.body, models.link);
+          expect(validationResult.isValid).to.equal(true);
+          testLinkId = res.body.linkId;
+          return done();
+        });
+    });
+
+    it('Should retrieve a specific link', function(done) {
+      api
+        .get(`links/${newLinkId}`)
+        .expect(HttpStatusCodes.OK)
+        .end(function(err, res) {
+          if (err) return done(err);
+          let validationResult = validateObject(res.body, models.link);
+          expect(validationResult.isValid).to.equal(true);
+          return done();
+        });
+    });
+
+    it('Should delete a link', function(done) {
+      api
+        .del(`links/${testLinkId}`)
+        .expect(HttpStatusCodes.NO_CONTENT)
+        .end(function(err, res) {
+          if (err) return done(err);
+          return done();
+        });
+    });
+
+    after(function() {
+      QueryUtility.query(`DELETE FROM links WHERE link = '${testLink}'`).then(function() {
+        QueryUtility.query(`DELETE FROM pins WHERE pinId = '${newPinId}'`).then(function() {
+          QueryUtility.query(`DELETE FROM users WHERE userId = '${newUserId}'`);
+        });
+      });
     });
   });
 

@@ -5,6 +5,7 @@ import VisitationService from '../services/VisitationService';
 import DescriptionService from '../services/DescriptionService';
 import ImageService from '../services/ImageService';
 import TagService from '../services/TagService';
+import LinkService from '../services/LinkService';
 import HttpStatusCodes from '../constants/HttpStatusCodes';
 import { sendError, handleSingle } from '../utilities/QueryUtility';
 
@@ -101,6 +102,21 @@ PinController.put('/:pinId/visits/:userId', function(req, res) {
 
 PinController.get('/:pinId/visits', function(req, res) {
   VisitationService.getPinVisitations(req.params.pinId)
+    .then(rows => res.send(rows))
+    .catch(err => sendError(res, err));
+});
+
+PinController.post('/:pinId/links', function(req, res) {
+  let link = req.body;
+  LinkService.createLink(link).then(function(result) {
+    LinkService.getLink(result.insertId)
+      .then(rows => handleSingle(res, rows, HttpStatusCodes.CREATED))
+      .catch(err => sendError(res, err));
+  }).catch(err => sendError(res, err));
+});
+
+PinController.get('/:pinId/links', function(req, res) {
+  LinkService.getPinLinks(req.params.pinId)
     .then(rows => res.send(rows))
     .catch(err => sendError(res, err));
 });
