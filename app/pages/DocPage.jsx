@@ -521,6 +521,31 @@ class DocPage extends React.Component {
           <pre className="docs-example">{`curl -X DELETE ${apiUri}/pins/90/tags/1`}</pre>
           <pre className="prettyprint"><code className="javascript">{`204 No Content`}</code></pre>
 
+          <h4>Add a link to a pin</h4>
+          <code>{`POST /pins/{pinId}/links`}</code>
+          <pre className="docs-example">{`curl -X POST ${apiUri}/pins/90/tags/1
+{
+  "userId": 1,
+  "pinId": 1,
+  "link": "http://www.example.com"
+}
+`}</pre>
+          <pre className="prettyprint"><code className="javascript">{`201 Created
+{
+  "linkId":1,
+  "userId":1,
+  "pinId":1,
+  "link":"http://www.example.com",
+  "dateCreated":"2015-10-23T01:34:21.000Z",
+  "dateModified":"2015-10-23T01:34:21.000Z"
+}
+`}</code></pre>
+
+          <h4>Un-tag a pin</h4>
+          <code>{`DELETE /pins/{pinId}/tags/{tagId}`}</code>
+          <pre className="docs-example">{`curl -X DELETE ${apiUri}/pins/90/tags/1`}</pre>
+          <pre className="prettyprint"><code className="javascript">{`204 No Content`}</code></pre>
+
           <h4>Get pin descriptions</h4>
           <code>{`GET /pins/{pinId}/descriptions`}</code>
           <pre className="docs-example">{`curl ${apiUri}/pins/90/descriptions`}</pre>
@@ -569,6 +594,22 @@ class DocPage extends React.Component {
     "pinId":30,
     "dateCreated":"2015-10-23T02:11:11.000Z",
     "dateModified":"2015-10-23T02:11:11.000Z"
+  }
+]
+`}</code></pre>
+
+          <h4>Get pin links</h4>
+          <code>{`GET /pins/{pinId}/links`}</code>
+          <pre className="docs-example">{`curl ${apiUri}/pins/90/links`}</pre>
+          <pre className="prettyprint"><code className="javascript">{`200 OK
+[
+  {
+    "linkId":6,
+    "userId":47,
+    "pinId":30,
+    "link":"http:www.test.example.com"
+    "dateCreated":"2015-10-23T02:09:42.000Z",
+    "dateModified":"2015-10-23T02:09:42.000Z"
   }
 ]
 `}</code></pre>
@@ -731,13 +772,51 @@ class DocPage extends React.Component {
           <h4>Retrieve an existing tag</h4>
           <p><code>{`GET /tags/{tagId}`}</code></p>
           <pre className="docs-example">{`curl ${apiUri}/tags/38`}</pre>
-          <pre className="prettyprint"><code className="javascript">{`201 Created
+          <pre className="prettyprint"><code className="javascript">{`200 OK
 {
   "tagId":38,
   "name":"Test Tag",
   "dateCreated":"2015-10-23T02:28:10.000Z",
   "dateModified":"2015-10-23T02:28:10.000Z"
 }`}</code></pre>
+
+          <h3 id="api-links">Links</h3>
+
+          <h4>Create a link</h4>
+          <p><code>POST /links</code></p>
+          <pre className="docs-example">{`curl -X POST ${apiUri}/links
+{
+  "userId": 1,
+  "pinId": 1,
+  "link": "http://www.example.com"
+}
+`}
+          </pre>
+          <pre className="prettyprint"><code className="javascript">{`201 Created
+{
+  "linkId":1,
+  "userId":1,
+  "pinId":1,
+  "link":"http://www.example.com",
+  "dateCreated":"2015-10-23T01:34:21.000Z",
+  "dateModified":"2015-10-23T01:34:21.000Z"
+}
+}`}</code></pre>
+
+          <h4>Retrieve an existing link</h4>
+          <p><code>{`GET /links/{linkId}`}</code></p>
+          <pre className="docs-example">{`curl ${apiUri}/links/1`}</pre>
+          <pre className="prettyprint"><code className="javascript">{`200 OK 
+{
+  "linkId":1,
+  "userId":1,
+  "pinId":1,
+  "link":"http://www.example.com",
+  "dateCreated":"2015-10-23T01:34:21.000Z",
+  "dateModified":"2015-10-23T01:34:21.000Z"
+}
+`}</code></pre>
+
         </div>
       </div>
     )

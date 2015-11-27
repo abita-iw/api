@@ -21,14 +21,14 @@ let QueryUtility = {
     return new Promise(function(resolve, reject) {
       reject({
         message: message,
-        code: httpErrorCode 
+        httpCode: httpErrorCode
       });
     });
   },
 
   sendError: function(res, error) {
-    if (error.code) 
-      res.status(error.code).send(error.message);
+    if (error.httpCode)
+      res.status(error.httpCode).send(error.message);
     else
       res.status(HttpStatusCodes.SERVER_ERROR).send(error);
   },

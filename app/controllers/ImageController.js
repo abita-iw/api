@@ -20,8 +20,8 @@ ImageController.post('/', upload.single('file'), function(req, res) {
     ImageService.resizeImage(file.path, result.insertId).then(function() {
       ImageService.getImage(result.insertId)
         .then(rows => handleSingle(res, rows))
-        .catch(err => sendError(res, { code: HttpStatusCodes.SERVER_ERROR }));
-    }).catch(err => sendError(res, { code: HttpStatusCodes.SERVER_ERROR, message: 'Error resizing image'}));
+        .catch(err => sendError(res, err));
+    }).catch(err => sendError(res, { httpCode: HttpStatusCodes.SERVER_ERROR, message: 'Error resizing image'}));
   }).catch(err => sendError(res, err));
 });
 

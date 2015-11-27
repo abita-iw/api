@@ -213,6 +213,28 @@ export default {
       name: 'title',
       validators: [length(0,255), required, notnull]
     }
+  ],
+  link: [
+    {
+      name: 'linkId',
+      validators: [int]
+    },
+    {
+      name: 'pinId',
+      validators: [int]
+    },
+    {
+      name: 'link',
+      validators: [required, notnull, length(0,255)]
+    },
+    {
+      name: 'dateCreated',
+      validators: [date]
+    },
+    {
+      name: 'dateModified',
+      validators: [date]
+    }
   ]
 };
 
