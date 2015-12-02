@@ -1,5 +1,5 @@
 import ControllerUtility from '../utilities/ControllerUtility';
-import PinService from '../services/PinService';
+import * as PinService from '../services/PinService';
 import FlagService from '../services/FlagService';
 import VisitationService from '../services/VisitationService';
 import DescriptionService from '../services/DescriptionService';
@@ -14,7 +14,37 @@ let PinController = ControllerUtility.makeController();
 PinController.all('/:pinId/*/:userId', ControllerUtility.authenticateRequest); 
 
 PinController.get('/', function(req, res) {
-  PinService.getPins(req.query.latitude, req.query.longitude, req.query.radius)
+  if (req.query.pinIds) {
+    let pinIds = req.query.pinIds.split(',');
+    PinService.getPins(pinIds).then(function(ps) {
+      let pins = [];
+      ps.forEach(p => pins.push(p[0]));
+      if (req.query.populate) {
+        PinService.populatePins(pins)
+          .then(popPins => res.send(popPins))
+          .catch(err => sendError(res, err));
+      }
+      else res.send(pins);
+    }).catch(err => sendError(res, err));
+  }
+  else if (req.query.latitude && req.query.longitude && req.query.radius) {
+   PinService.searchPins(req.query.latitude, req.query.longitude, req.query.radius)
+     .then(pins => {
+       if (req.query.populate) {
+         PinService.populatePins(pins)         
+           .then(popPins => res.send(popPins))
+           .catch(err => sendError(res, err));
+       }
+       else res.send(pins);
+     })
+     .catch(err => sendError(res, err));
+  }
+  else sendError(res, "Invalid query");
+});
+
+PinController.get('/populate', function(req, res) {
+  let pinIds = req.query.pinIds.split(',');
+  Promise.all(pinIds.map(pinId => PinService.populatePin(pinId)))
     .then(rows => res.send(rows))
     .catch(err => sendError(res, err));
 });

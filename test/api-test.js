@@ -9,8 +9,6 @@ import ApiApp from '../app/ApiApp';
 import models from '../app/models/index';
 import { validateObject } from '../app/utilities/ValidationUtility';
 import HttpStatusCodes from '../app/constants/HttpStatusCodes';
-import PinService from '../app/services/PinService';
-import UserService from '../app/services/UserService';
 import JWTService from '../app/services/JWTService';
 
 let API_PORT = 4001;
@@ -54,21 +52,36 @@ describe('REST API', function() {
     let newPinId = null;
     let newImageId = null;
     before (function(done) {
-      UserService.createUser({
-        email: testEmail
-      }).then(res => {
-        newUserId = res.insertId;
-        PinService.createPin({
-          userId: newUserId,
-          typeId: 1,
-          latitude: 0,
-          longitude: 0,
-          title: testTitle
-        }).then(res => {
-          newPinId = res.insertId;
-          return done();
+      api
+        .post('users')
+        .send({
+          email: testEmail
+        })
+        .expect(HttpStatusCodes.CREATED)
+        .end(function(err, res) {
+          if (err) return done(err);
+          let validationResult = validateObject(res.body, models.user);
+          expect(validationResult.isValid).to.equal(true);
+          newUserId = res.body.userId;
+          jwt = JWTService.createToken(res.body);
+          api
+            .post('pins')
+            .send({
+              userId: newUserId,
+              typeId: 1,
+              latitude: 0,
+              longitude: 0,
+              title: testTitle
+            })
+            .expect(HttpStatusCodes.CREATED)
+            .end(function(err, res) {
+              if (err) return done(err);
+              let validationResult = validateObject(res.body, models.pin);
+              expect(validationResult.isValid).to.equal(true);
+              newPinId = res.body.pinId;
+              return done();
+            });
         });
-      }).catch(err => done(err));
     });
 
     it('Should retrieve a list of all images', function(done) {
@@ -428,20 +441,6 @@ describe('REST API', function() {
           let validationResult = validateObject(res.body, models.pin);
           expect(validationResult.isValid).to.equal(true);
           expect(res.body.title).to.equal(updatedTitle);
-          return done();
-        });
-    });
-
-    it('Should retrieve all pins', function(done) {
-      api
-        .get(`pins`)
-        .expect(HttpStatusCodes.OK)
-        .end(function(err, res) {
-          if (err) return done(err);
-          res.body.forEach(pin => {
-            let validationResult = validateObject(pin, models.pin);
-            expect(validationResult.isValid).to.equal(true);
-          });
           return done();
         });
     });
