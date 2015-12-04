@@ -85,7 +85,10 @@ export function populatePin(pin) {
       newPin.descriptions = res[3];
       newPin.flags = res[4];
       newPin.tags = res[5];
-      newPin.creator = res[6];
+      let users = res[6];
+      if (users.length > 0) {
+        newPin.creator = users[0];
+      }
       resolve(newPin);
     }).catch(err => reject(err));
   });
