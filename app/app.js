@@ -13,7 +13,7 @@ var compression = require('compression');
 var morgan = require('morgan');
 var app = express();
 var ApiApp = require('./ApiApp').default;
-var ServerRender = require('./server.jsx');
+var ServerRender = require('./server.jsx').default;
 var https = require('https');
 var http = require('http');
 
@@ -28,8 +28,7 @@ var publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath));
 
 app.use('/api', ApiApp);
-app.use('/api', express());
-// app.use('/', ServerRender);
+app.use('/', ServerRender);
 
 // error pages
 app.use(function (err, req, res, next) {
