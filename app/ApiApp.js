@@ -1,4 +1,4 @@
-import ControllerUtility from './utilities/ControllerUtility';
+import * as ControllerUtility from './utilities/ControllerUtility';
 import ImageController from './controllers/ImageController';
 import ImageSizeController from './controllers/ImageSizeController';
 import UserController from './controllers/UserController';

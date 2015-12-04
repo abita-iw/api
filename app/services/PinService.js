@@ -1,23 +1,23 @@
 import _ from 'lodash';
 
-import QueryUtility from '../utilities/QueryUtility';
-import DateUtility from '../utilities/DateUtility';
-import PinUtility from '../utilities/PinUtility';
+import { getNow } from '../utilities/DateUtility';
+import { getDistance } from '../utilities/PinUtility';
 import { metersPerDegree, defaultPinLimit } from '../constants/ServerConstants';
 import { query, error } from '../utilities/QueryUtility';
 import models from '../models/index';
 import { int } from '../models/types';
 import { validateObject, executePropValidator } from '../utilities/ValidationUtility';
 
-import ImageService from './ImageService';
-import VisitationService from './VisitationService';
-import DescriptionService from './DescriptionService';
-import FlagService from './FlagService';
-import TagService from './TagService';
-import LinkService from './LinkService';
+import * as ImageService from './ImageService';
+import * as VisitationService from './VisitationService';
+import * as DescriptionService from './DescriptionService';
+import * as FlagService from './FlagService';
+import * as TagService from './TagService';
+import * as LinkService from './LinkService';
+import * as UserService from './UserService';
 
-  // query pins within a given spherical rectange centered at (latitude,
-  // longitude) with side length 2 * radius (in meters)
+// query pins within a given spherical rectange centered at (latitude,
+// longitude) with side length 2 * radius (in meters)
 export function getPins(pinIds) {
   return Promise.all(pinIds.map(pinId => getPin(pinId)));
 }
@@ -52,8 +52,8 @@ WHERE
   return new Promise(function(resolve, reject) {
     query(sql).then(function(rows) {
       let sorted = rows.sort(function(a, b) {
-        return PinUtility.getDistance(a.latitude, a.longitude, latitude, longitude)
-          - PinUtility.getDistance(b.latitude, b.longitude, latitude, longitude);
+        return getDistance(a.latitude, a.longitude, latitude, longitude)
+          - getDistance(b.latitude, b.longitude, latitude, longitude);
       });
       resolve(sorted.slice(0, limit));
     }).catch(err => reject(err));
@@ -66,6 +66,7 @@ export function populatePins(pins) {
 
 export function populatePin(pin) {
   let pinId = pin.pinId;
+  let userId = pin.userId;
   let newPin = Object.assign({}, pin);
   return new Promise(function(resolve, reject) {
     Promise.all([
@@ -74,18 +75,20 @@ export function populatePin(pin) {
       VisitationService.getPinVisitations(pinId),
       DescriptionService.getPinDescriptions(pinId),
       FlagService.getPinFlags(pinId),
-      TagService.getPinTags(pinId)
+      TagService.getPinTags(pinId),
+      UserService.getUser(userId)
     ])
-    .then(function(rows) {
-      newPin.images = rows[0];
-      newPin.links = rows[1];
-      newPin.visits = rows[2];
-      newPin.descriptions = rows[3];
-      newPin.flags = rows[4];
-      newPin.tags = rows[5];
+    .then(function(res) {
+      newPin.images = res[0];
+      newPin.links = res[1];
+      newPin.visits = res[2];
+      newPin.descriptions = res[3];
+      newPin.flags = res[4];
+      newPin.tags = res[5];
+      newPin.creator = res[6];
       resolve(newPin);
     }).catch(err => reject(err));
-  }).catch(err => reject(err));
+  });
 }
 
 export function getPin(pinId) {
@@ -117,7 +120,7 @@ export function createPin(pin) {
   let validationResult = validateObject(pin, models.pin);
   if (!validationResult.isValid) return error(validationResult.errors);
   
-  let now = DateUtility.getNow();
+  let now = getNow();
   let sql = `
 INSERT INTO
     pins (
@@ -139,7 +142,7 @@ export function updatePin(pin) {
   let validationResult = validateObject(pin, models.pin);
   if (!validationResult.isValid) return error(validationResult.errors);
   
-  let now = DateUtility.getNow();
+  let now = getNow();
   let sql = `
 UPDATE
     pins

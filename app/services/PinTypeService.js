@@ -1,9 +1,6 @@
-import QueryUtility from '../utilities/QueryUtility';
+import { query } from '../utilities/QueryUtility';
 
-let query = QueryUtility.query;
-
-let PinTypeService = {
-  getPinTypes: function () {
+export function getPinTypes() {
     let sql = `
 SELECT
     pinTypeId,
@@ -13,6 +10,3 @@ FROM
 `;
     return query(sql);
   }
-};
-
-export default PinTypeService;

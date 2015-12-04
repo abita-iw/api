@@ -1,6 +1,6 @@
-import ControllerUtility from '../utilities/ControllerUtility';
-import TagService from '../services/TagService';
-import HttpStatusCodes from '../constants/HttpStatusCodes';
+import * as ControllerUtility from '../utilities/ControllerUtility';
+import * as TagService from '../services/TagService';
+import * as HttpStatusCodes from '../constants/HttpStatusCodes';
 import { sendError, handleSingle } from '../utilities/QueryUtility';
 
 let TagController = ControllerUtility.makeController();

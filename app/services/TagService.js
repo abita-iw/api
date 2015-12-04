@@ -1,11 +1,10 @@
-import DateUtility from '../utilities/DateUtility';
+import * as DateUtility from '../utilities/DateUtility';
 import { query, error } from '../utilities/QueryUtility';
 import models from '../models/index';
 import { int } from '../models/types';
 import { validateObject, executePropValidator } from '../utilities/ValidationUtility';
 
-let TagService = {
-  getTags: function () {
+export function getTags() {
     let sql = `
 SELECT
     tagId,
@@ -16,9 +15,9 @@ FROM
     tags
 `;
     return query(sql);
-  },
+  }
 
-  getPinTags: function(pinId) {
+export function getPinTags(pinId) {
     let validationResult = executePropValidator(pinId, 'pinId', int);
     if (!validationResult.isValid) return error(validationResult.error);
 
@@ -36,9 +35,9 @@ WHERE
     pinTags.pinId = ?
 `;
     return query(sql, [pinId]);
-  },
+  }
 
-  getTag: function(tagId) {
+export function getTag(tagId) {
     let validationResult = executePropValidator(tagId, 'tagId', int);
     if (!validationResult.isValid) return error(validationResult.error);
 
@@ -54,9 +53,9 @@ WHERE
     tagId = ?
 `;
     return query(sql, [tagId]);
-  },
+  }
 
-  tagPin: function(pinId, tagId) {
+export function tagPin(pinId, tagId) {
     let tagValidationResult = executePropValidator(tagId, 'tagId', int);
     if (!tagValidationResult.isValid) return error(tagValidationResult.error);
     let pinValidationResult = executePropValidator(pinId, 'pinId', int);
@@ -69,9 +68,9 @@ VALUES
     (?,?)
 `;
     return query(sql, [pinId, tagId]);
-  },
+  }
 
-  untagPin: function(pinId, tagId) {
+export function untagPin(pinId, tagId) {
     let tagValidationResult = executePropValidator(tagId, 'tagId', int);
     if (!tagValidationResult.isValid) return error(tagValidationResult.error);
     let pinValidationResult = executePropValidator(pinId, 'pinId', int);
@@ -85,9 +84,9 @@ WHERE
     AND tagId = ?
 `;
     return query(sql, [pinId, tagId]);
-  },
+  }
 
-  createTag: function(tag) {
+export function createTag(tag) {
     let validationResult = validateObject(tag, models.tag);
     if (!validationResult.isValid) return error(validationResult.errors);
 
@@ -100,6 +99,3 @@ VALUES
 `;
     return query(sql, [tag.name, now, now]);
   }
-};
-
-export default TagService;

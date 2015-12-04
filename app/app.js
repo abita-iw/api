@@ -1,6 +1,7 @@
 'use strict';
 
-require('babel/register');
+require('babel-register');
+require('babel-polyfill');
 
 var fs = require('fs');
 var express = require('express');
@@ -11,8 +12,8 @@ var logger = require('./logger');
 var compression = require('compression');
 var morgan = require('morgan');
 var app = express();
-var ApiApp = require('./ApiApp');
-var ServerRender = require('./server.jsx');
+var ApiApp = require('./ApiApp').default;
+var ServerRender = require('./server.jsx').default;
 var https = require('https');
 var http = require('http');
 

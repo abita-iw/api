@@ -1,5 +1,5 @@
-import ControllerUtility from '../utilities/ControllerUtility';
-import PlaceService from '../services/PlaceService';
+import * as ControllerUtility from '../utilities/ControllerUtility';
+import * as PlaceService from '../services/PlaceService';
 import { sendError, handleSingle } from '../utilities/QueryUtility';
 
 let PlaceController = ControllerUtility.makeController();

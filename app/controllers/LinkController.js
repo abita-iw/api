@@ -1,6 +1,6 @@
-import ControllerUtility from '../utilities/ControllerUtility';
-import LinkService from '../services/LinkService';
-import HttpStatusCodes from '../constants/HttpStatusCodes';
+import * as ControllerUtility from '../utilities/ControllerUtility';
+import * as LinkService from '../services/LinkService';
+import * as HttpStatusCodes from '../constants/HttpStatusCodes';
 import { sendError, handleSingle } from '../utilities/QueryUtility';
 
 let LinkController = ControllerUtility.makeController();

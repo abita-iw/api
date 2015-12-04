@@ -1,11 +1,7 @@
-import QueryUtility from '../utilities/QueryUtility';
-import DateUtility from '../utilities/DateUtility';
+import { query } from '../utilities/QueryUtility';
+import * as DateUtility from '../utilities/DateUtility';
 
-let query = QueryUtility.query;
-
-let VisitationService = {
-
-  getPinVisitations: function(pinId) {
+export function getPinVisitations(pinId) {
     let sql = `
 SELECT
     userId,
@@ -17,9 +13,9 @@ WHERE
     pinId = ?
 `;
     return query(sql, [pinId]);
-  },
+  }
 
-  getUserVisitations: function(userId) {
+export function getUserVisitations(userId) {
     let sql = `
 SELECT
     userId,
@@ -31,9 +27,9 @@ WHERE
     userId = ?
 `;
     return query(sql, [userId]);
-  },
+  }
 
-  createVisitation: function(userId, pinId) {
+export function createVisitation(userId, pinId) {
     let now = DateUtility.getNow();
     let sql = `
 INSERT INTO
@@ -43,6 +39,3 @@ VALUES
 `;
     return query(sql, [userId, pinId, now]);
   }
-};
-
-export default VisitationService;

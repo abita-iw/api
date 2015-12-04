@@ -1,9 +1,5 @@
-import JWTService from '../services/JWTService';
+import { createToken } from '../services/JWTService';
 
-let TestUtility = {
-  getTestJWT: function(email) {
-    return JWTService.createToken({email});
-  }
+export function getTestJWT(email) {
+  return createToken({email});
 }
-
-export default TestUtility;
