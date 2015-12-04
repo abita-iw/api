@@ -1,0 +1,35 @@
+Server Software:        
+Server Hostname:        localhost
+Server Port:            6000
+
+Document Path:          /api/pins?latitude=0&longitude=0&radius=500&populate=true
+Document Length:        147318 bytes
+
+Concurrency Level:      10
+Time taken for tests:   16.219 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      147550000 bytes
+HTML transferred:       147318000 bytes
+Requests per second:    61.65 [#/sec] (mean)
+Time per request:       162.195 [ms] (mean)
+Time per request:       16.219 [ms] (mean, across all concurrent requests)
+Transfer rate:          8883.88 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.0      0       0
+Processing:   124  161  13.9    158     300
+Waiting:      123  161  13.9    158     300
+Total:        124  162  13.9    158     300
+
+Percentage of the requests served within a certain time (ms)
+  50%    158
+  66%    160
+  75%    161
+  80%    162
+  90%    166
+  95%    196
+  98%    210
+  99%    213
+ 100%    300 (longest request)

@@ -1,0 +1,38 @@
+Server Software:        
+Server Hostname:        localhost
+Server Port:            6000
+
+Document Path:          /api/images/base64
+Document Length:        124 bytes
+
+Concurrency Level:      1
+Time taken for tests:   138.678 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      350000 bytes
+Total body sent:        25486000
+HTML transferred:       124000 bytes
+Requests per second:    7.21 [#/sec] (mean)
+Time per request:       138.678 [ms] (mean)
+Time per request:       138.678 [ms] (mean, across all concurrent requests)
+Transfer rate:          2.46 [Kbytes/sec] received
+                        179.47 kb/s sent
+                        181.94 kb/s total
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.0      0       0
+Processing:   127  139   5.3    138     167
+Waiting:      126  138   5.3    138     167
+Total:        127  139   5.3    138     168
+
+Percentage of the requests served within a certain time (ms)
+  50%    138
+  66%    140
+  75%    141
+  80%    143
+  90%    146
+  95%    148
+  98%    151
+  99%    153
+ 100%    168 (longest request)
