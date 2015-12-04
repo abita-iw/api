@@ -59,6 +59,7 @@
     "start:dev": "PORT=5000;NODE_ENV=development;DEBUG=app ./node_modules/nodemon/bin/nodemon.js ./app/app.js",
     "start:prod": "NODE_ENV=production ./node_modules/forever/bin/forever start -al forever.log -ao out.log -ae err.log app/app.js",
     "stop:prod": "./node_modules/forever/bin/forever stop app/app.js",
+    "reload:prod": "./node_modules/forever/bin/forever stop app/app.js && NODE_ENV=production ./node_modules/forever/bin/forever start -al forever.log -ao out.log -ae err.log app/app.js",
     "test": "mocha --compilers js:babel-register"
   }
 }
