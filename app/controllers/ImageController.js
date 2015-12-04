@@ -1,7 +1,7 @@
 import multer from 'multer';
-import ControllerUtility from '../utilities/ControllerUtility';
-import ImageService from '../services/ImageService';
-import HttpStatusCodes from '../constants/HttpStatusCodes';
+import * as ControllerUtility from '../utilities/ControllerUtility';
+import * as ImageService from '../services/ImageService';
+import * as HttpStatusCodes from '../constants/HttpStatusCodes';
 import { sendError, handleSingle } from '../utilities/QueryUtility';
 import fs from 'fs';
 

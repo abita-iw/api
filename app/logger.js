@@ -1,11 +1,12 @@
 import winston from 'winston';
 import mkdirp from 'mkdirp';
+import winstonDailyRotateFile from 'winston-daily-rotate-file';
 
 mkdirp('./logs');
 
 var logger = new (winston.Logger)({
   transports: [
-    new (winston.transports.DailyRotateFile)({
+    new (winstonDailyRotateFile)({
       name: 'info-file',
       filename: 'info.log',
       dirname: 'logs',
@@ -16,7 +17,7 @@ var logger = new (winston.Logger)({
       maxFiles: 5,
       colorize: false
     }),
-    new (winston.transports.DailyRotateFile)({
+    new (winstonDailyRotateFile)({
       name: 'error-file',
       dirname: 'logs',
       filename: 'error.log',

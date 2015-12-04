@@ -1,6 +1,6 @@
-import ControllerUtility from '../utilities/ControllerUtility';
-import PinTypeService from '../services/PinTypeService';
-import HttpStatusCodes from '../constants/HttpStatusCodes';
+import * as ControllerUtility from '../utilities/ControllerUtility';
+import * as PinTypeService from '../services/PinTypeService';
+import * as HttpStatusCodes from '../constants/HttpStatusCodes';
 import { sendError } from '../utilities/QueryUtility';
 
 let PinTypeController = ControllerUtility.makeController();

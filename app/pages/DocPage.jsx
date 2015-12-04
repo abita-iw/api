@@ -52,6 +52,11 @@ class DocPage extends React.Component {
                     <td>yes</td>
                   </tr>
                   <tr>
+                    <td>displayName</td>
+                    <td>string</td>
+                    <td>yes</td>
+                  </tr>
+                  <tr>
                     <td>dateCreated</td>
                     <td>string</td>
                     <td>yes</td>
@@ -270,6 +275,7 @@ class DocPage extends React.Component {
   "user": {
     "userId": 47,
     "email": "test@example.com",
+    "displayName": "Test User",
     "dateCreated": "2015-10-21T03:55:06.000Z",
     "dateModified": "2015-10-21T03:55:06.000Z"
   }
@@ -285,6 +291,7 @@ class DocPage extends React.Component {
           <pre className="docs-example">{`curl -X POST ${apiUri}/users
 {
   "email": "test@example.com",
+  "displayName": "Test User",
 }
 `}
           </pre>
@@ -292,6 +299,7 @@ class DocPage extends React.Component {
 {
   "userId": 47,
   "email": "test@example.com",
+  "displayName": "Test User",
   "dateCreated": "2015-10-21T03:55:06.000Z",
   "dateModified": "2015-10-21T03:55:06.000Z"
 }`}</code></pre>
@@ -303,6 +311,7 @@ class DocPage extends React.Component {
 {
   "userId": 1,
   "email": "test@example.com",
+  "displayName": "Test User",
   "dateCreated": "2015-10-21T03:55:06.000Z",
   "dateModified": "2015-10-21T03:55:06.000Z"
 }`}</code></pre>
@@ -357,11 +366,15 @@ class DocPage extends React.Component {
           <h3 id="api-pins">Pins</h3>
 
           <h4>Search Pins</h4>
-          <code>Get /pins</code>
+          <code>GET /pins</code>
           <p>
-            Return an array of pins that are within a given spherical rectangle centered
-            at (latitude, longitude) with side length 2 * radius. Pins are sorted according
-            to distance from the center.
+            Query pins, either by specifying a set of `pinIds` or by providing coordinates
+            and a radius. Optionally, provide `populate=true` as a query parameter to
+            populate results with associated pin data (e.g., visits, images, tags, etc.).
+
+            If querying by coordinates, return an array of pins that are within a given
+            spherical rectangle centered at (latitude, longitude) with side length 2 * radius.
+            Pins are sorted according to distance from the center.
           </p>
           <table className="table table-bordered">
             <thead>
@@ -373,6 +386,12 @@ class DocPage extends React.Component {
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <td>pinIds</td>
+                <td>array of ints</td>
+                <td>no</td>
+                <td>separate ids with commas</td>
+              </tr>
               <tr>
                 <td>latitude</td>
                 <td>float</td>

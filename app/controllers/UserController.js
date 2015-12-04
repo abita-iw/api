@@ -1,9 +1,9 @@
-import ControllerUtility from '../utilities/ControllerUtility';
-import UserService from '../services/UserService';
-import StarService from '../services/StarService';
-import VisitationService from '../services/VisitationService';
-import DescriptionService from '../services/DescriptionService';
-import HttpStatusCodes from '../constants/HttpStatusCodes';
+import * as ControllerUtility from '../utilities/ControllerUtility';
+import * as UserService from '../services/UserService';
+import * as StarService from '../services/StarService';
+import * as VisitationService from '../services/VisitationService';
+import * as DescriptionService from '../services/DescriptionService';
+import * as HttpStatusCodes from '../constants/HttpStatusCodes';
 import { sendError, handleSingle } from '../utilities/QueryUtility';
 
 let UserController = ControllerUtility.makeController();

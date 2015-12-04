@@ -1,12 +1,12 @@
-import ControllerUtility from '../utilities/ControllerUtility';
+import * as ControllerUtility from '../utilities/ControllerUtility';
 import * as PinService from '../services/PinService';
-import FlagService from '../services/FlagService';
-import VisitationService from '../services/VisitationService';
-import DescriptionService from '../services/DescriptionService';
-import ImageService from '../services/ImageService';
-import TagService from '../services/TagService';
-import LinkService from '../services/LinkService';
-import HttpStatusCodes from '../constants/HttpStatusCodes';
+import * as FlagService from '../services/FlagService';
+import * as VisitationService from '../services/VisitationService';
+import * as DescriptionService from '../services/DescriptionService';
+import * as ImageService from '../services/ImageService';
+import * as TagService from '../services/TagService';
+import * as LinkService from '../services/LinkService';
+import * as HttpStatusCodes from '../constants/HttpStatusCodes';
 import { sendError, handleSingle } from '../utilities/QueryUtility';
 
 let PinController = ControllerUtility.makeController();
@@ -28,7 +28,7 @@ PinController.get('/', function(req, res) {
     }).catch(err => sendError(res, err));
   }
   else if (req.query.latitude && req.query.longitude && req.query.radius) {
-   PinService.searchPins(req.query.latitude, req.query.longitude, req.query.radius)
+    PinService.searchPins(req.query.latitude, req.query.longitude, req.query.radius)
      .then(pins => {
        if (req.query.populate) {
          PinService.populatePins(pins)         

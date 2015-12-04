@@ -1,10 +1,6 @@
 import moment from 'moment';
-import ServerConstants from '../constants/ServerConstants';
+import { momentStrings } from '../constants/ServerConstants';
 
-let DateUtility = {
-  getNow: function() {
-    return moment().format(ServerConstants.momentStrings.url);
-  }
-};
-
-export default DateUtility;
+export function getNow() {
+  return moment().format(momentStrings.url);
+}

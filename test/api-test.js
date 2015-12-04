@@ -3,13 +3,13 @@ import supertest from 'supertest';
 import { Promise } from 'es6-promise';
 import _ from 'lodash';
 import express from 'express';
-import QueryUtility from '../app/utilities/QueryUtility';
-import TestUtility from '../app/utilities/TestUtility';
+import * as QueryUtility from '../app/utilities/QueryUtility';
+import { getTestJWT } from '../app/utilities/TestUtility';
 import ApiApp from '../app/ApiApp';
 import models from '../app/models/index';
 import { validateObject } from '../app/utilities/ValidationUtility';
-import HttpStatusCodes from '../app/constants/HttpStatusCodes';
-import JWTService from '../app/services/JWTService';
+import * as HttpStatusCodes from '../app/constants/HttpStatusCodes';
+import * as JWTService from '../app/services/JWTService';
 
 let API_PORT = 4001;
 
@@ -17,7 +17,8 @@ describe('REST API', function() {
   let api = supertest(`localhost:${API_PORT}/`);
   let testEmail = 'test@example.com';
   let testTitle = 'TEST_TITLE';
-  let jwt = TestUtility.getTestJWT(testEmail);
+  let testDisplayName = 'TEST_DISPLAY_NAME';
+  let jwt = getTestJWT(testEmail);
 
   before(function(done) {
     let app = express();
@@ -55,7 +56,8 @@ describe('REST API', function() {
       api
         .post('users')
         .send({
-          email: testEmail
+          email: testEmail,
+          displayName: testDisplayName
         })
         .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
@@ -144,7 +146,8 @@ describe('REST API', function() {
       api
         .post('users')
         .send({
-          email: testEmail
+          email: testEmail,
+          displayName: testDisplayName
         })
         .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
@@ -178,7 +181,8 @@ describe('REST API', function() {
         .post('users')
         .set('X-JWT', jwt)
         .send({
-          email: 'test'
+          email: 'test',
+          displayName: testDisplayName
         })
         .expect(HttpStatusCodes.BAD_REQUEST)
         .end(function(err, res) {
@@ -191,7 +195,8 @@ describe('REST API', function() {
       api
         .post('users')
         .send({
-          email: testEmail
+          email: testEmail,
+          displayName: testDisplayName
         })
         .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
@@ -342,7 +347,8 @@ describe('REST API', function() {
           api
            .post('users')
            .send({
-             email: testEmail
+             email: testEmail,
+             displayName: testDisplayName
            })
            .expect(HttpStatusCodes.CREATED)
            .end(function(err, res) {
@@ -645,7 +651,8 @@ describe('REST API', function() {
       api
         .post('users')
         .send({
-          email: testEmail
+          email: testEmail,
+          displayName: testDisplayName
         })
         .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {
@@ -747,7 +754,8 @@ describe('REST API', function() {
       api
         .post('users')
         .send({
-          email: testEmail
+          email: testEmail,
+          displayName: testDisplayName
         })
         .expect(HttpStatusCodes.CREATED)
         .end(function(err, res) {

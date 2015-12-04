@@ -1,6 +1,7 @@
 'use strict';
 
-require('babel/register');
+require('babel-register');
+require('babel-polyfill');
 
 var fs = require('fs');
 var express = require('express');
@@ -11,7 +12,7 @@ var logger = require('./logger');
 var compression = require('compression');
 var morgan = require('morgan');
 var app = express();
-var ApiApp = require('./ApiApp');
+var ApiApp = require('./ApiApp').default;
 var ServerRender = require('./server.jsx');
 var https = require('https');
 var http = require('http');
@@ -27,7 +28,8 @@ var publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath));
 
 app.use('/api', ApiApp);
-app.use('/', ServerRender);
+app.use('/api', express());
+// app.use('/', ServerRender);
 
 // error pages
 app.use(function (err, req, res, next) {

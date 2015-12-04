@@ -1,12 +1,11 @@
-import DateUtility from '../utilities/DateUtility';
+import * as DateUtility from '../utilities/DateUtility';
 import { query, error } from '../utilities/QueryUtility';
 import models from '../models/index';
 import { int } from '../models/types';
 import { validateObject, executePropValidator } from '../utilities/ValidationUtility';
 
-let DescriptionService = {
-  getDescriptions: function () {
-    let sql = `
+export function getDescriptions() {
+  let sql = `
 SELECT
     descriptionId,
     userId,
@@ -19,14 +18,14 @@ FROM
 WHERE
     isDeleted = false
 `;
-    return query(sql);
-  },
+  return query(sql);
+}
 
-  getDescription: function(descriptionId) {
-    let validationResult = executePropValidator(descriptionId, 'descriptionId', int);
-    if (!validationResult.isValid) return error(validationResult.error);
+export function getDescription(descriptionId) {
+  let validationResult = executePropValidator(descriptionId, 'descriptionId', int);
+  if (!validationResult.isValid) return error(validationResult.error);
 
-    let sql = `
+  let sql = `
 SELECT
     descriptionId,
     userId,
@@ -39,14 +38,14 @@ FROM
 WHERE
     descriptionId = ?
 `;
-    return query(sql, [descriptionId]);
-  },
+  return query(sql, [descriptionId]);
+}
 
-  getUserDescriptions: function(userId) {
-    let validationResult = executePropValidator(userId, 'userId', int);
-    if (!validationResult.isValid) return error(validationResult.error);
-    
-    let sql = `
+export function getUserDescriptions(userId) {
+  let validationResult = executePropValidator(userId, 'userId', int);
+  if (!validationResult.isValid) return error(validationResult.error);
+  
+  let sql = `
 SELECT
     descriptionId,
     userId,
@@ -59,14 +58,14 @@ FROM
 WHERE
     userId = ?
 `;
-    return query(sql, [userId]);
-  },
+  return query(sql, [userId]);
+}
 
-  getPinDescriptions: function(pinId) {
-    let validationResult = executePropValidator(pinId, 'pinid', int);
-    if (!validationResult.isValid) return error(validationResult.error);
+export function getPinDescriptions(pinId) {
+  let validationResult = executePropValidator(pinId, 'pinid', int);
+  if (!validationResult.isValid) return error(validationResult.error);
 
-    let sql = `
+  let sql = `
 SELECT
     descriptionId,
     userId,
@@ -79,29 +78,29 @@ FROM
 WHERE
     pinId = ?
 `;
-    return query(sql, [pinId]);
-  },
+  return query(sql, [pinId]);
+}
 
-  createDescription: function(description) {
-    let validationResult = validateObject(description, models.description);
-    if (!validationResult.isValid) return error(validationResult.errors);
+export function createDescription(description) {
+  let validationResult = validateObject(description, models.description);
+  if (!validationResult.isValid) return error(validationResult.errors);
 
-    let now = DateUtility.getNow();
-    let sql = `
+  let now = DateUtility.getNow();
+  let sql = `
 INSERT INTO
     descriptions (userId, pinId, text, dateCreated, dateModified)
 VALUES
     (?,?,?,?,?)
 `;
-    return query(sql, [description.userId, description.pinId, description.text, now, now]);
-  },
+  return query(sql, [description.userId, description.pinId, description.text, now, now]);
+}
 
-  updateDescription: function(description) {
-    let validationResult = validateObject(description, models.description);
-    if (!validationResult.isValid) return error(validationResult.errors);
+export function updateDescription(description) {
+  let validationResult = validateObject(description, models.description);
+  if (!validationResult.isValid) return error(validationResult.errors);
 
-    let now = DateUtility.getNow();
-    let sql = `
+  let now = DateUtility.getNow();
+  let sql = `
 UPDATE
     descriptions
 SET
@@ -110,14 +109,14 @@ SET
 WHERE
     descriptionId = ?
 `;
-    return query(sql, [description.text, now, description.descriptionId]);
-  },
+  return query(sql, [description.text, now, description.descriptionId]);
+}
 
-  deleteDescription: function(descriptionId) {
-    let validationResult = executePropValidator(descriptionId, 'descriptionId', int);
-    if (!validationResult.isValid) return error(validationResult.error);
+export function deleteDescription(descriptionId) {
+  let validationResult = executePropValidator(descriptionId, 'descriptionId', int);
+  if (!validationResult.isValid) return error(validationResult.error);
 
-    let sql = `
+  let sql = `
 UPDATE
     descriptions
 SET
@@ -125,8 +124,5 @@ SET
 WHERE
     descriptionId = ?
 `;
-    return query(sql, [descriptionId]);
-  }
-};
-
-export default DescriptionService;
+  return query(sql, [descriptionId]);
+}

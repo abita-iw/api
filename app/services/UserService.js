@@ -1,12 +1,11 @@
-import DateUtility from '../utilities/DateUtility';
+import * as DateUtility from '../utilities/DateUtility';
 import { query, error } from '../utilities/QueryUtility';
 import { validateObject, executePropValidator } from '../utilities/ValidationUtility';
 import models from '../models/index';
 import { int, email } from '../models/types';
 
-let UserService = {
-  getUsers: function () {
-    let sql = `
+export function getUsers() {
+  let sql = `
 SELECT
     userId,
     email,
@@ -17,14 +16,14 @@ FROM
 WHERE
     isDeleted = false
 `;
-    return query(sql);
-  },
+  return query(sql);
+}
 
-  getUserByEmail: function(userEmail) {
-    let validationResult = executePropValidator(userEmail, 'email', email);
-    if (!validationResult.isValid) return error(validationResult.error);
+export function getUserByEmail(userEmail) {
+  let validationResult = executePropValidator(userEmail, 'email', email);
+  if (!validationResult.isValid) return error(validationResult.error);
 
-    let sql = `
+  let sql = `
 SELECT
     userId,
     email,
@@ -35,17 +34,18 @@ FROM
 WHERE
     email = ?
 `;
-    return query(sql, [userEmail]);
-  },
+  return query(sql, [userEmail]);
+}
 
-  getUser: function(userId) {
-    let validationResult = executePropValidator(userId, 'userId', int);
-    if (!validationResult.isValid) return error(validationResult.error);
+export function getUser(userId) {
+  let validationResult = executePropValidator(userId, 'userId', int);
+  if (!validationResult.isValid) return error(validationResult.error);
 
-    let sql = `
+  let sql = `
 SELECT
     userId,
     email,
+    displayName,
     dateCreated,
     dateModified
 FROM
@@ -53,29 +53,26 @@ FROM
 WHERE
     userId = ?
 `;
-    return query(sql, [userId]);
-  },
+  return query(sql, [userId]);
+}
 
-  createUser: function(user) {
-    let validationResult = validateObject(user, models.user);
-    if (!validationResult.isValid) return error(validationResult.errors);
+export function createUser(user) {
+  let validationResult = validateObject(user, models.user);
+  if (!validationResult.isValid) return error(validationResult.errors);
 
-    let now = DateUtility.getNow();
-    let sql = `
+  let now = DateUtility.getNow();
+  let sql = `
 INSERT INTO
-    users (email, dateCreated, dateModified)
+    users (email, displayName, dateCreated, dateModified)
 VALUES
-    (?,?,?)
+    (?,?,?,?)
 `;
-    return query(sql, [user.email, now, now]);
-  },
+  return query(sql, [user.email, user.displayName, now, now]);
+}
 
-  deleteUser: function(userId) {
-    let validationResult = executePropValidator(userId, 'userId', int);
-    if (!validationResult.isValid) return error(validationResult.error);
-    
-    return query("UPDATE users SET isDeleted = true WHERE userId = ?", [userId]);
-  }
-};
-
-export default UserService;
+export function deleteUser(userId) {
+  let validationResult = executePropValidator(userId, 'userId', int);
+  if (!validationResult.isValid) return error(validationResult.error);
+  
+  return query("UPDATE users SET isDeleted = true WHERE userId = ?", [userId]);
+}

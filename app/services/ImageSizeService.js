@@ -1,11 +1,5 @@
-import QueryUtility from '../utilities/QueryUtility';
+import { query } from '../utilities/QueryUtility';
 
-let query = QueryUtility.query;
-
-let ImageSizeService = {
-  getImageSizes: function () {
-    return query("SELECT * FROM imageSizes");
-  }
+export function getImageSizes() {
+  return query("SELECT * FROM imageSizes");
 };
-
-export default ImageSizeService;

@@ -1,6 +1,6 @@
-import ControllerUtility from '../utilities/ControllerUtility';
-import DescriptionService from '../services/DescriptionService';
-import HttpStatusCodes from '../constants/HttpStatusCodes';
+import * as ControllerUtility from '../utilities/ControllerUtility';
+import * as DescriptionService from '../services/DescriptionService';
+import * as HttpStatusCodes from '../constants/HttpStatusCodes';
 import { sendError, handleSingle } from '../utilities/QueryUtility';
 
 let DescriptionController = ControllerUtility.makeController();

@@ -1,8 +1,8 @@
-import ControllerUtility from '../utilities/ControllerUtility';
-import HttpStatusCodes from '../constants/HttpStatusCodes';
-import AuthService from '../services/AuthService';
-import UserService from '../services/UserService';
-import JWTService from '../services/JWTService';
+import * as ControllerUtility from '../utilities/ControllerUtility';
+import * as HttpStatusCodes from '../constants/HttpStatusCodes';
+import * as AuthService from '../services/AuthService';
+import * as UserService from '../services/UserService';
+import * as JWTService from '../services/JWTService';
 import { sendError } from '../utilities/QueryUtility';
 
 let AuthController = ControllerUtility.makeController();

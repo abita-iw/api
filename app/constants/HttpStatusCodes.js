@@ -1,9 +1,7 @@
-export default {
-  OK: 200,
-  CREATED: 201,
-  NO_CONTENT: 204,
-  BAD_REQUEST: 400,
-  FORBIDDEN: 403,
-  NOT_FOUND: 404,
-  SERVER_ERROR: 500
-}
+export const OK = 200;
+export const CREATED = 201;
+export const NO_CONTENT = 204;
+export const BAD_REQUEST = 400;
+export const FORBIDDEN = 403;
+export const NOT_FOUND = 404;
+export const SERVER_ERROR = 50;

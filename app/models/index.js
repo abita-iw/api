@@ -88,6 +88,10 @@ export default {
       validators: [email, required, notnull]
     },
     {
+      name: 'displayName',
+      validators: [required, notnull]
+    },
+    {
       name: 'dateCreated',
       validators: [date]
     },
