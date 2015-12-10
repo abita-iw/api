@@ -8,7 +8,6 @@ export function query(sql, inserts) {
       connection.query(mysql.format(sql, inserts), function (err, rows) {
         connection.release();
         if (err) {
-          console.log(err);
           reject(err);
         }
         resolve(rows);
@@ -19,7 +18,6 @@ export function query(sql, inserts) {
 
 export function error(message, httpErrorCode = HttpStatusCodes.BAD_REQUEST) {
   return new Promise(function(resolve, reject) {
-    console.log(message);
     reject({
       message: message,
       httpCode: httpErrorCode
@@ -28,7 +26,6 @@ export function error(message, httpErrorCode = HttpStatusCodes.BAD_REQUEST) {
 }
 
 export function sendError(res, error) {
-  console.log(error);
   if (error.httpCode)
     res.status(error.httpCode).send(error.message);
   else
