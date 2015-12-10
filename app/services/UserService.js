@@ -9,6 +9,7 @@ export function getUsers() {
 SELECT
     userId,
     email,
+    displayName,
     dateCreated,
     dateModified
 FROM

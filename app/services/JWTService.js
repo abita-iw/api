@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { Promsise } from 'es6-promise';
+import { Promise } from 'es6-promise';
 import * as ServerConstants from '../constants/ServerConstants';
 import fs from 'fs';
 

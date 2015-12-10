@@ -1,0 +1,7 @@
+{
+    "userId": 293,
+    "title": "test title",
+    "latitude": 0,
+    "longitude": 0,
+    "typeId": 1
+}
