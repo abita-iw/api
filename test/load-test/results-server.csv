@@ -1,0 +1,6 @@
+Request Type,Rate (rps),Latency (ms)
+Image Post,8.21,1218
+Pin Search,51.88,192.746
+Pin Search (populate),5.64,1773
+Pin Post,430.28,23.241
+Description Post,406.68,24.49
